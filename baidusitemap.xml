@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
+
+
+    
   <url>
     <loc>http://blog.darkangel7.com/2016/08/19/Hexo%E6%90%AD%E5%BB%BA/</loc>
-    
     <lastmod>2016-08-19T04:40:16.000Z</lastmod>
-    
-  </url>
-  
+    <data>
+        <display>
+        <title>Hexo搭建</title>
+        <pubTime>2016-08-19T04:40:16.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
 </urlset>
