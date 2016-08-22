@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2016-08-22T05:43:01.000Z</updated>
+  <updated>2016-08-22T05:45:35.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2016/08/19/Hexo%E6%90%AD%E5%BB%BA/"/>
     <id>http://blog.darkangel7.com/2016/08/19/Hexo搭建/</id>
     <published>2016-08-19T04:40:16.000Z</published>
-    <updated>2016-08-22T05:43:01.000Z</updated>
+    <updated>2016-08-22T05:45:35.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h2><ul>
 <li>先安装Homebrew</li>
