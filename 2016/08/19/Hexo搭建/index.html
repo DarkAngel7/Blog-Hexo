@@ -53,7 +53,29 @@
 </span>
     <h1 class="post-title">Hexo搭建</h1>
     <section class="post-content">
-      <p>测试一下，小琴琴。</p>
+      <h2 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h2><ul>
+<li>先安装Homebrew</li>
+<li>再安装node.js</li>
+<li>安装hexo</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-renderer-ejs --save</div><div class="line">$ npm install hexo-renderer-stylus --save</div><div class="line">$ npm install hexo-renderer-marked --save</div></pre></td></tr></table></figure>
+<ul>
+<li>买域名</li>
+<li>github创建blog的仓库</li>
+<li>在source里建CNAME</li>
+<li>修改_config.yml文件，配置一些东西.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dig blog.sunnyxx.com +nostats +nocomments +nocmd</div></pre></td></tr></table></figure>
+<h2 id="坑："><a href="#坑：" class="headerlink" title="坑："></a>坑：</h2><ul>
+<li>google被墙，jquery需要改为百度的，apps.bdimg.com/libs/…</li>
+<li>rss订阅，输入命令npm install hexo-generator-feed –save，记得有–save</li>
+<li>sitemap.xml, 需要自己添加搜索，不然搜不到。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --savenpm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure>
+<ul>
+<li>多说，评论组件，</li>
+<li>分享，百度分享</li>
+</ul>
 
     </section>
     <footer class="post-footer">
