@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2016-08-22T05:47:02.000Z</updated>
+  <updated>2016-08-22T08:53:42.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,31 +20,53 @@
     <link href="http://blog.darkangel7.com/2016/08/19/Hexo%E6%90%AD%E5%BB%BA/"/>
     <id>http://blog.darkangel7.com/2016/08/19/Hexo搭建/</id>
     <published>2016-08-19T04:40:16.000Z</published>
-    <updated>2016-08-22T05:47:02.000Z</updated>
+    <updated>2016-08-22T08:53:42.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h2><ul>
 <li>先安装Homebrew</li>
 <li>再安装node.js</li>
-<li>安装hexo</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-renderer-ejs --save</div><div class="line">$ npm install hexo-renderer-stylus --save</div><div class="line">$ npm install hexo-renderer-marked --save</div></pre></td></tr></table></figure>
-<ul>
-<li>买域名</li>
-<li>github创建blog的仓库</li>
+<li><p>安装hexo</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-renderer-ejs --save</div><div class="line">$ npm install hexo-renderer-stylus --save</div><div class="line">$ npm install hexo-renderer-marked --save</div></pre></td></tr></table></figure>
+</li>
+<li><p>购买域名，推荐在万网购买，国外的Godaddy也可以。</p>
+</li>
+<li>在自己的Github创建Blog的仓库，如</li>
 <li>在source里建CNAME</li>
-<li>修改_config.yml文件，配置一些东西.</li>
+<li><p>修改_config.yml文件，配置一些东西.</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ dig blog.sunnyxx.com +nostats +nocomments +nocmd</div></pre></td></tr></table></figure>
+</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dig blog.sunnyxx.com +nostats +nocomments +nocmd</div></pre></td></tr></table></figure>
-<h2 id="坑："><a href="#坑：" class="headerlink" title="坑："></a>坑：</h2><ul>
-<li>google被墙，jquery需要改为百度的，apps.bdimg.com/libs/…</li>
-<li>rss订阅，输入命令npm install hexo-generator-feed –save，记得有–save</li>
-<li>sitemap.xml, 需要自己添加搜索，不然搜不到。</li>
-</ul>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --save</div><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h4 id="一、访问速度"><a href="#一、访问速度" class="headerlink" title="一、访问速度"></a>一、访问速度</h4><p>由于Google被墙，大部分主题中引用的jquery都会因为超时（可以Blog目录下搜索google），而造成页面访问很慢，这里需要将jquery改为百度的</p>
+<pre><code>&lt;script src=&quot;//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js&quot;&gt;&lt;/script&gt;
+</code></pre><h4 id="二、RSS订阅"><a href="#二、RSS订阅" class="headerlink" title="二、RSS订阅"></a>二、RSS订阅</h4><p>输入命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-generator-feed --save</div></pre></td></tr></table></figure>
+<p>然后在_config.yml中，添加    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">rss: /atom.xml</div><div class="line">feed:</div><div class="line"> 	type: atom</div><div class="line">	path: atom.xml</div><div class="line"> 	limit: 20</div></pre></td></tr></table></figure>
+<h4 id="三、搜索支持"><a href="#三、搜索支持" class="headerlink" title="三、搜索支持"></a>三、搜索支持</h4><p>现在在百度和Google是搜不到你的网站的，为了让搜索引擎搜索到，需要添加sitemap.xml。首先输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --save</div><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure>
+<p>然后在<code>_config.yml</code>文件中添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sitemap:</div><div class="line"> 		path: sitemap.xml</div><div class="line">baidusitemap:</div><div class="line"> 		path: baidusitemap.xml</div></pre></td></tr></table></figure>
+<p>当前最好还是自己到搜索引擎提交</p>
 <ul>
-<li>多说，评论组件，</li>
-<li>分享，百度分享</li>
+<li><a href="https://www.google.com/webmasters/tools/home?hl=zh-CN" target="_blank" rel="external">Google搜索引擎提交入口</a></li>
+<li><a href="http://www.baidu.com/search/url_submit.htm" target="_blank" rel="external">百度搜索引擎入口</a></li>
 </ul>
+<p>先验证网站所有权，下载html，mv到Blog/source目录下，执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo g -d</div></pre></td></tr></table></figure>
+<h4 id="四、评论功能"><a href="#四、评论功能" class="headerlink" title="四、评论功能"></a>四、评论功能</h4><p>可以使用<a href="http://duoshuo.com" target="_blank" rel="external">多说</a>来提供评论功能。首先，在<code>_config.yml</code>文件中添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># Duoshuo</div><div class="line">duoshuo_shortname: yoursite.doushuo.com</div></pre></td></tr></table></figure>
+<p>  然后，搜索themes文件夹下，你使用的theme文件目录下的<code>commemt.ejs</code>（不同的theme可能位置不同，请自行寻找）。修改如下：</p>
+<pre><code> &lt;div id=&quot;comment&quot; class=&quot;comments-area&quot;&gt;
+     &lt;% if(config.duoshuo_shortname) { %&gt;
+     &lt;! -- 多说的代码 --&gt; 
+     &lt;% } %&gt; 
+&lt;/div&gt;    
+
+ 如果报关于data-thread-key的错误，则改成下面这样：  
+ &lt;div class=&quot;ds-thread&quot; data-thread-key=&quot;&lt;%= page.path %&gt;&quot; data-title=&quot;&lt;%= page.title %&gt;&quot; data-url=&quot;&lt;%= page.permalink %&gt;&quot;&gt;&lt;/div&gt;
+</code></pre><h4 id="五、分享功能"><a href="#五、分享功能" class="headerlink" title="五、分享功能"></a>五、分享功能</h4><p>可以在Blog目录下搜索<code>post/share</code>，一般在<code>article.ejs</code>文件中，或者<code>post.ejs</code>文件中，然后替换</p>
+<pre><code>&lt;%- partial(&apos;post/author&apos;) %&gt;
+</code></pre><p>为<a href="http://share.baidu.com/code" target="_blank" rel="external">百度分享</a>提供的代码。</p>
 ]]></content>
     
     <summary type="html">
@@ -52,9 +74,8 @@
       &lt;h2 id=&quot;安装：&quot;&gt;&lt;a href=&quot;#安装：&quot; class=&quot;headerlink&quot; title=&quot;安装：&quot;&gt;&lt;/a&gt;安装：&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;先安装Homebrew&lt;/li&gt;
 &lt;li&gt;再安装node.js&lt;/li&gt;
-&lt;li&gt;安装hexo&lt;/li&gt;
-&lt;/ul&gt;
-&lt;
+&lt;li&gt;&lt;p&gt;安装hexo&lt;/p&gt;
+ &lt;fig
     
     </summary>
     

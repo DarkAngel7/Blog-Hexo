@@ -14,6 +14,8 @@
   <meta name="generator" content="Dark Angel">
 
   
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+  
   
   <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
   
@@ -56,52 +58,57 @@
       <h2 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h2><ul>
 <li>先安装Homebrew</li>
 <li>再安装node.js</li>
-<li>安装hexo</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-renderer-ejs --save</div><div class="line">$ npm install hexo-renderer-stylus --save</div><div class="line">$ npm install hexo-renderer-marked --save</div></pre></td></tr></table></figure>
-<ul>
-<li>买域名</li>
-<li>github创建blog的仓库</li>
+<li><p>安装hexo</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-renderer-ejs --save</div><div class="line">$ npm install hexo-renderer-stylus --save</div><div class="line">$ npm install hexo-renderer-marked --save</div></pre></td></tr></table></figure>
+</li>
+<li><p>购买域名，推荐在万网购买，国外的Godaddy也可以。</p>
+</li>
+<li>在自己的Github创建Blog的仓库，如</li>
 <li>在source里建CNAME</li>
-<li>修改_config.yml文件，配置一些东西.</li>
+<li><p>修改_config.yml文件，配置一些东西.</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ dig blog.sunnyxx.com +nostats +nocomments +nocmd</div></pre></td></tr></table></figure>
+</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dig blog.sunnyxx.com +nostats +nocomments +nocmd</div></pre></td></tr></table></figure>
-<h2 id="坑："><a href="#坑：" class="headerlink" title="坑："></a>坑：</h2><ul>
-<li>google被墙，jquery需要改为百度的，apps.bdimg.com/libs/…</li>
-<li>rss订阅，输入命令npm install hexo-generator-feed –save，记得有–save</li>
-<li>sitemap.xml, 需要自己添加搜索，不然搜不到。</li>
-</ul>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --save</div><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h4 id="一、访问速度"><a href="#一、访问速度" class="headerlink" title="一、访问速度"></a>一、访问速度</h4><p>由于Google被墙，大部分主题中引用的jquery都会因为超时（可以Blog目录下搜索google），而造成页面访问很慢，这里需要将jquery改为百度的</p>
+<pre><code>&lt;script src=&quot;//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js&quot;&gt;&lt;/script&gt;
+</code></pre><h4 id="二、RSS订阅"><a href="#二、RSS订阅" class="headerlink" title="二、RSS订阅"></a>二、RSS订阅</h4><p>输入命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-generator-feed --save</div></pre></td></tr></table></figure>
+<p>然后在_config.yml中，添加    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">rss: /atom.xml</div><div class="line">feed:</div><div class="line"> 	type: atom</div><div class="line">	path: atom.xml</div><div class="line"> 	limit: 20</div></pre></td></tr></table></figure>
+<h4 id="三、搜索支持"><a href="#三、搜索支持" class="headerlink" title="三、搜索支持"></a>三、搜索支持</h4><p>现在在百度和Google是搜不到你的网站的，为了让搜索引擎搜索到，需要添加sitemap.xml。首先输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --save</div><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure>
+<p>然后在<code>_config.yml</code>文件中添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sitemap:</div><div class="line"> 		path: sitemap.xml</div><div class="line">baidusitemap:</div><div class="line"> 		path: baidusitemap.xml</div></pre></td></tr></table></figure>
+<p>当前最好还是自己到搜索引擎提交</p>
 <ul>
-<li>多说，评论组件，</li>
-<li>分享，百度分享</li>
+<li><a href="https://www.google.com/webmasters/tools/home?hl=zh-CN" target="_blank" rel="external">Google搜索引擎提交入口</a></li>
+<li><a href="http://www.baidu.com/search/url_submit.htm" target="_blank" rel="external">百度搜索引擎入口</a></li>
 </ul>
+<p>先验证网站所有权，下载html，mv到Blog/source目录下，执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo g -d</div></pre></td></tr></table></figure>
+<h4 id="四、评论功能"><a href="#四、评论功能" class="headerlink" title="四、评论功能"></a>四、评论功能</h4><p>可以使用<a href="http://duoshuo.com" target="_blank" rel="external">多说</a>来提供评论功能。首先，在<code>_config.yml</code>文件中添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># Duoshuo</div><div class="line">duoshuo_shortname: yoursite.doushuo.com</div></pre></td></tr></table></figure>
+<p>  然后，搜索themes文件夹下，你使用的theme文件目录下的<code>commemt.ejs</code>（不同的theme可能位置不同，请自行寻找）。修改如下：</p>
+<pre><code> &lt;div id=&quot;comment&quot; class=&quot;comments-area&quot;&gt;
+     &lt;% if(config.duoshuo_shortname) { %&gt;
+     &lt;! -- 多说的代码 --&gt; 
+     &lt;% } %&gt; 
+&lt;/div&gt;    
+
+ 如果报关于data-thread-key的错误，则改成下面这样：  
+ &lt;div class=&quot;ds-thread&quot; data-thread-key=&quot;&lt;%= page.path %&gt;&quot; data-title=&quot;&lt;%= page.title %&gt;&quot; data-url=&quot;&lt;%= page.permalink %&gt;&quot;&gt;&lt;/div&gt;
+</code></pre><h4 id="五、分享功能"><a href="#五、分享功能" class="headerlink" title="五、分享功能"></a>五、分享功能</h4><p>可以在Blog目录下搜索<code>post/share</code>，一般在<code>article.ejs</code>文件中，或者<code>post.ejs</code>文件中，然后替换</p>
+<pre><code>&lt;%- partial(&apos;post/author&apos;) %&gt;
+</code></pre><p>为<a href="http://share.baidu.com/code" target="_blank" rel="external">百度分享</a>提供的代码。</p>
 
     </section>
     <footer class="post-footer">
       <section class="author">
     <h4>Dark Angel</h4>
-    <p>作为挨踢业的伪设计狮伪技术牛 搬过砖也种过地：爱看、爱听、爱玩儿、爱折腾、机械水电、泥瓦木匠啥都来</p>
+    <p>iOS界的低调探索者、优客工场App负责人。</p>
 </section>
-      <section class="share">
-    <h4>Share this post</h4>
-    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?title=作为挨踢业的伪设计狮伪技术牛 搬过砖也种过地：爱看、爱听、爱玩儿、爱折腾、机械水电、泥瓦木匠啥都来 ?url=http://blog.darkangel7.com/2016/08/19/Hexo搭建/" target="_blank">
-        <span class="hidden">weibo</span>
-    </a>
-    <a class="icon-twitter" href="http://twitter.com/share?url=http://blog.darkangel7.com/2016/08/19/Hexo搭建/"
-       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
-        <span class="hidden">Twitter</span>
-    </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.darkangel7.com/2016/08/19/Hexo搭建/"
-       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
-        <span class="hidden">Facebook</span>
-    </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://blog.darkangel7.com/2016/08/19/Hexo搭建/"
-       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
-        <span class="hidden">Google+</span>
-    </a>
-</section>
-
+    <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
     </footer>
   </article>
   <nav class="pagination" role="pagination">
@@ -111,7 +118,6 @@
 </nav>
 
   <div id="comment" class="comments-area">
-    <h4 class="title"><a href="#duoshuo_comments" name="duoshuo_comments">Comments</a></h4>
     
     	<!-- 多说评论框 start -->
 　	<div class="ds-thread" data-thread-key="2016/08/19/Hexo搭建/" data-title="Hexo搭建" data-url="http://blog.darkangel7.com/2016/08/19/Hexo搭建/"></div>	
@@ -138,11 +144,12 @@
       
 <footer class="site-footer">
   
-  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">Subscribe!</span></a>
   
   <div class="inner">
-     <section class="copyright">All content copyright <a href="/">Dark Angel</a> &copy; 2014 &bull; All rights reserved.</section>
-     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+     <section class="copyright">原创文章，版权声明：署名-非商业性使用-相同方式共享 2.5</section>
+     <section class="copyright"><a href="/">Dark Angel</a> &copy; 2016 &bull; All Rights Reserved.</section>
+     <section class="poweredby">Powered By Hexo</section>
   </div>
 </footer>
 
@@ -165,13 +172,9 @@
 
           <a class="icon-news"  href="/archive"><span>Archive</span></a>
 
-          <a class="icon-image"  href="/images"><span>Images</span></a>
+          <a class="icon-wiki"  href="https://github.com/DarkAngel7"><span>Github</span></a>
 
-          <a class="icon-wiki"  href="/wiki/2014-10-28-wiki/"><span>Wiki</span></a>
-
-          <a class="icon-Favorites"  href="/favorites"><span>Favorites</span></a>
-
-          <a class="icon-mail"  href="/about/2014-09-11-mabao/"><span>Contact</span></a>
+          <a class="icon-Favorites"  href="/atom.xml"><span>Rss</span></a>
 
 </nav>
 
