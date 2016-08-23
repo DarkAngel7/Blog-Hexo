@@ -43,7 +43,7 @@
    ========================================================================== */
 
 html { height: 100%; max-height: 100%; font-size: 64%; }
-body { height: 100%; max-height: 100%; font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun', 'Droid Sans Fallback', sans-serif; font-size: 1.7rem; line-height: 1.6em; color: #3A4145; background: white; }
+body { height: 100%; max-height: 100%; font-family: Menlo, 'Open Sans', 'Helvetica Neue', 'Helvetica', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun', 'Droid Sans Fallback', sans-serif; font-size: 1.7rem; line-height: 1.6em; color: #3A4145; background: white; }
 
 ::-moz-selection {
  color: #222;
@@ -52,14 +52,14 @@ body { height: 100%; max-height: 100%; font-family: 'Open Sans', 'Helvetica Neue
 }
 ::selection { background: #B2D8FD; text-shadow: none; }
 h1, h2, h3, h4, h5, h6 { text-rendering: optimizeLegibility; line-height: 1; margin-top: 0; }
-h1 { font-size: 4.8rem; line-height: 1.2em; letter-spacing: -2px; text-indent: -3px; }
-h2 { font-size: 4.2rem; line-height: 1.2em; letter-spacing: -1px; text-indent: -2px; }
-h3 { font-size: 3.2rem; }
-h4 { font-size: 2.4rem; }
-h5 { font-size: 1.8rem; }
-h6 { font-size: 1.4rem; }
-a { color: #1F85C8; text-decoration: none; transition: color ease 0.3s; outline: none; }
-a:hover, a:focus { color: #3498DB; outline: none; }
+h1 { font-size: 3.2rem; line-height: 1.2em; letter-spacing: -2px; text-indent: -3px; }
+h2 { font-size: 2.4rem; line-height: 1.2em; letter-spacing: -1px; text-indent: -2px; }
+h3 { font-size: 1.8rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1.0rem; }
+a { color: #0068b7; text-decoration: none; transition: color ease 0.3s; outline: none; }
+a:hover, a:focus { color: #e60012; outline: none; }
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: #50585D; }
 p, ul, ol, dl { margin: 1.6em 0; }
 ol ol, ul ul, ul ol, ol ul { margin: 0.4em 0; }
@@ -72,9 +72,9 @@ blockquote small { display: inline-block; margin: 0.8em 0 0.8em 1.5em; font-size
 blockquote small:before { content: '\2014 \00A0'; }
 blockquote cite { font-weight: bold; }
 blockquote cite a { font-weight: normal; }
-mark { background-color: #ffc336; }
-code, tt { padding: 1px 3px; font-family: Menlo, Inconsolata, monospace, sans-serif; font-size: 0.85em; white-space: pre-wrap; border-bottom: 0px solid #e0e0e0; background: #f8f8f8; border-radius: 3px; }
-pre { -moz-box-sizing: border-box; box-sizing: border-box; margin: 5em 0; border-bottom: 0px solid #e4e4e4; width: 100%; padding: 5em; font-family: Menlo, Monaco, Consolas, monospace, "Courier New", sans-serif; font-size: 0.85em; line-height: 1.6em; white-space: pre; overflow: auto; background: #f8f8f8; border-radius: 3px; }
+mark { background-color: #f8f8f8; }
+code, tt { padding: 2px 4px; color: #e60012; font-family: Menlo, Inconsolata, monospace, sans-serif; font-size: 0.85em; white-space: pre-wrap; border-bottom: 0px solid #e0e0e0; background: #eeeeee; border-radius: 3px; }
+pre { -moz-box-sizing: border-box; box-sizing: border-box; margin: 0.5em 0; border-bottom: 0px solid #e4e4e4; width: 100%; padding: 0.5em; font-family: Menlo, Monaco, Consolas, monospace, "Courier New", sans-serif; font-size: 0.85em; line-height: 1.6em; white-space: pre; overflow: auto; background: #f8f8f8; border-radius: 3px; }
 pre code, tt { font-family: Menlo; font-size: inherit; white-space: -moz-pre-wrap; white-space: pre-wrap; background: transparent; border: none; padding: 0; }
 kbd { display: inline-block; margin-bottom: 0.4em; padding: 1px 8px; border: #ccc 1px solid; color: #666; text-shadow: #fff 0 1px 0; font-size: 0.9em; font-weight: bold; background: #f4f4f4; border-radius: 4px; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2),  0 1px 0 0 #fff inset; }
 table { -moz-box-sizing: border-box; box-sizing: border-box; margin: 1.6em 0; width: 100%; max-width: 100%; background-color: transparent; }
