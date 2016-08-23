@@ -58,8 +58,8 @@ h3 { font-size: 1.8rem; }
 h4 { font-size: 1.4rem; }
 h5 { font-size: 1.2rem; }
 h6 { font-size: 1.0rem; }
-a { color: #0068b7; text-decoration: none; transition: color ease 0.3s; outline: none; }
-a:hover, a:focus { color: #e60012; outline: none; }
+a { color: #29BB9C; text-decoration: none; transition: color ease 0.3s; outline: none; }
+a:hover, a:focus { color: #197460; outline: none; }
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: #50585D; }
 p, ul, ol, dl { margin: 1.6em 0; }
 ol ol, ul ul, ul ol, ol ul { margin: 0.4em 0; }
