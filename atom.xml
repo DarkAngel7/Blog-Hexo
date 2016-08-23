@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2016-08-22T11:19:13.000Z</updated>
+  <updated>2016-08-23T04:31:50.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2016/08/19/Hexo+Github%E7%9A%84Blog%E6%90%AD%E5%BB%BA/"/>
     <id>http://blog.darkangel7.com/2016/08/19/Hexo+Github的Blog搭建/</id>
     <published>2016-08-19T04:40:16.000Z</published>
-    <updated>2016-08-22T11:19:13.000Z</updated>
+    <updated>2016-08-23T04:31:50.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h3><h4 id="一、安装Homebrew"><a href="#一、安装Homebrew" class="headerlink" title="一、安装Homebrew"></a>一、安装Homebrew</h4><p>Mac上已经安装了ruby环境，只需要输入</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div></pre></td></tr></table></figure>
@@ -54,7 +54,9 @@
 deploy:
       type: git
       repository: git@github.com:DarkAngel7/Blog-Hexo.git
-</code></pre><p>这里repository的地址可以是https的，也可以是git的，只不过git需要SSH证书，一般用https就可以了，如果出现443错误，替换成git。</p>
+</code></pre><p>安装git插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure>
+<p>这里repository的地址可以是https的，也可以是git的，只不过git需要SSH证书，一般用https就可以了，如果出现443错误，替换成git。</p>
 <p>然后在Blog目录下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo g -d</div></pre></td></tr></table></figure>
 <p>生成静态文件并且部署出去，不出意外，已经可以外网访问了。</p>

@@ -103,7 +103,9 @@
 deploy:
       type: git
       repository: git@github.com:DarkAngel7/Blog-Hexo.git
-</code></pre><p>这里repository的地址可以是https的，也可以是git的，只不过git需要SSH证书，一般用https就可以了，如果出现443错误，替换成git。</p>
+</code></pre><p>安装git插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure>
+<p>这里repository的地址可以是https的，也可以是git的，只不过git需要SSH证书，一般用https就可以了，如果出现443错误，替换成git。</p>
 <p>然后在Blog目录下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo g -d</div></pre></td></tr></table></figure>
 <p>生成静态文件并且部署出去，不出意外，已经可以外网访问了。</p>
