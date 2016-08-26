@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2016-08-23T08:39:14.000Z</updated>
+  <updated>2016-08-26T03:32:59.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2016/08/19/Hexo+Github%E7%9A%84Blog%E6%90%AD%E5%BB%BA/"/>
     <id>http://blog.darkangel7.com/2016/08/19/Hexo+Github的Blog搭建/</id>
     <published>2016-08-19T04:40:16.000Z</published>
-    <updated>2016-08-23T08:39:14.000Z</updated>
+    <updated>2016-08-26T03:32:59.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h1><h2 id="一、安装Homebrew"><a href="#一、安装Homebrew" class="headerlink" title="一、安装Homebrew"></a>一、安装Homebrew</h2><p>Mac上已经安装了ruby环境，只需要输入</p>
 <pre><code>ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
@@ -44,7 +44,7 @@ hexo s
 <p><img src="http://ww2.sinaimg.cn/large/65e4f1e6jw1f72qbhppqfj214a0sqq6q.jpg" alt="repository2"><br>创建完毕，直接进行到下一步。</p>
 <h2 id="五、购买域名"><a href="#五、购买域名" class="headerlink" title="五、购买域名"></a>五、购买域名</h2><p>推荐在万网购买，国外的Godaddy也可以。以万网为例：<br>买好域名实名认证了之后，到<code>控制台</code> - <code>云解析DNS</code>中添加一个解析，如：</p>
 <p><img src="http://ww4.sinaimg.cn/large/65e4f1e6jw1f72qblgcswj21kw01qglt.jpg" alt=""></p>
-<p>CNAME映射到自己的xxx.github.io。这里的xxx是你的在github的名称，我的是<code>DarkAngle7</code>。<br>在终端中输入</p>
+<p>CNAME映射到自己的xxx.github.io。这里的xxx是你的在github的名称，我的是<code>DarkAngel7</code>。<br>在终端中输入</p>
 <pre><code>dig blog.darkangel7.com +nostats +nocomments +nocmd
 </code></pre><p>如果出现下面的结果，证明解析成功。</p>
 <pre><code>DarkAngel-MacBook-Pro-2:Blog DarkAngel$ dig blog.darkangel7.com +nostats +nocomments +nocmd
