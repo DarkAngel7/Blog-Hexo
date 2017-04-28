@@ -53,11 +53,11 @@ body { height: 100%; max-height: 100%; font-family: Menlo, 'Open Sans', 'Helveti
 ::selection { background: #B2D8FD; text-shadow: none; }
 h1, h2, h3, h4, h5, h6 { text-rendering: optimizeLegibility; line-height: 1; margin-top: 10px; }
 h1 { font-size: 2.8rem; line-height: 1.2em; letter-spacing: -2px; text-indent: -3px; }
-h2 { font-size: 2.0rem; line-height: 1.2em; letter-spacing: -1px; text-indent: -2px; }
-h3 { font-size: 1.9rem; }
-h4 { font-size: 1.8rem; }
-h5 { font-size: 1.6rem; }
-h6 { font-size: 1.5rem; }
+h2 { font-size: 2.4rem; line-height: 1.2em; letter-spacing: -1px; text-indent: -2px; }
+h3 { font-size: 2.2rem; }
+h4 { font-size: 2.0rem; }
+h5 { font-size: 1.8rem; }
+h6 { font-size: 1.6rem; }
 a { color: #29BB9C; text-decoration: none; transition: color ease 0.3s; outline: none; }
 a:hover, a:focus { color: #197460; outline: none; }
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: #50585D; }
