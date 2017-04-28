@@ -60,10 +60,11 @@
     <span id="busuanzi_value_page_pv"></span>次阅读
     <span class="ds-thread-count" data-thread-key="2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/"></span>
     <section class="post-content">
-      <h1 id="Jenkins部署MacOS-Slave实现持续集成-iOS"><a href="#Jenkins部署MacOS-Slave实现持续集成-iOS" class="headerlink" title="Jenkins部署MacOS Slave实现持续集成(iOS)"></a>Jenkins部署MacOS Slave实现持续集成(iOS)</h1><p>解决Linux服务器上的Jenkins无法构建Xcode工程</p>
+      <p>解决Linux服务器上的Jenkins无法构建Xcode工程</p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Linux服务器无法安装Xcode，所以Jenkins无法通过shell来调用xcodebuild、xcrun等命令来构建Xcode工程，因此无法持续集成，敏捷开发。下面介绍一种配置Jenkins节点的方式，来实现Linux上的Jenkins构建Xcode工程，并上传ipa到蒲公英pgyer来进行测试。</p>
 <h2 id="一、配置MacOS-Slave"><a href="#一、配置MacOS-Slave" class="headerlink" title="一、配置MacOS Slave"></a>一、配置MacOS Slave</h2><p>Jenkins有个强大的功能，配置Slave(奴隶)服务器，来实现分布式部署构建。具体步骤如下：</p>
-<h3 id="1-配置Mac电脑。在系统偏好设置-gt-共享-中开启-远程登录，如下图："><a href="#1-配置Mac电脑。在系统偏好设置-gt-共享-中开启-远程登录，如下图：" class="headerlink" title="1. 配置Mac电脑。在系统偏好设置 &gt; 共享 中开启 远程登录，如下图："></a>1. 配置Mac电脑。在<strong>系统偏好设置</strong> &gt; <strong>共享</strong> 中开启 <strong>远程登录</strong>，如下图：<img src="https://ww3.sinaimg.cn/large/006tNc79ly1ff2hls2iauj31140tidjg.jpg" alt=""></h3><h3 id="2-创建节点。"><a href="#2-创建节点。" class="headerlink" title="2. 创建节点。"></a>2. 创建节点。</h3><p>Jenkins &gt; 系统管理 &gt;  管理节点 &gt; 新建节点，输入节点名称，记得勾选 <code>Permanent Agent</code>，点击OK。</p>
+<h3 id="1-配置Mac电脑。"><a href="#1-配置Mac电脑。" class="headerlink" title="1. 配置Mac电脑。"></a>1. 配置Mac电脑。</h3><p>在<strong>系统偏好设置</strong> &gt; <strong>共享</strong> 中开启 <strong>远程登录</strong>，如下图：<br><img src="https://ww3.sinaimg.cn/large/006tNc79ly1ff2hls2iauj31140tidjg.jpg" alt=""> </p>
+<h3 id="2-创建节点。"><a href="#2-创建节点。" class="headerlink" title="2. 创建节点。"></a>2. 创建节点。</h3><p>Jenkins &gt; 系统管理 &gt;  管理节点 &gt; 新建节点，输入节点名称，记得勾选 <code>Permanent Agent</code>，点击OK。</p>
 <h3 id="3-配置节点。"><a href="#3-配置节点。" class="headerlink" title="3. 配置节点。"></a>3. 配置节点。</h3><p><img src="https://ww2.sinaimg.cn/large/006tNc79ly1ff2hfwxx8ej31eg0ts0wt.jpg" alt="">其中要保证<code>/User/Shared/Jenkins/</code>目录的权限为ssh链接的用户可读写。</p>
 <p>Host是Mac的ip地址，Credentials是ssh登录Mac时需要的账户和密码。可以添加一个</p>
 <p><img src="https://ww4.sinaimg.cn/large/006tNc79ly1ff2hhcg0f1j31gq0r842o.jpg" alt=""></p>
