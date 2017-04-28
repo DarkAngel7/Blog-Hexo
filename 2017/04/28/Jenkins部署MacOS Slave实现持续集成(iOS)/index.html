@@ -1,28 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <title>Dark Angel</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/8.5/styles/github.min.css">
+  <meta name="generator" content="Dark Angel">
+
   
-  <link href="/atom.xml" rel="self"/>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
   
-  <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-04-28T10:37:32.000Z</updated>
-  <id>http://blog.darkangel7.com/</id>
   
-  <author>
-    <name>Dark Angel</name>
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="site-head"  style="background: #24282b url(/img/img-bg.jpg) center; background-size: cover" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="/img/avatar.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">Dark Angel</h1>
+            <h2 class="blog-description"><button id="showMenu">Show Menu</button></h2>
+        </div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-04-28T10:37:30.000Z" itemprop="datePublished">
+          2017-04-28
+      </time>
     
-  </author>
-  
-  <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title></title>
-    <link href="http://blog.darkangel7.com/2017/04/28/Jenkins%E9%83%A8%E7%BD%B2MacOS%20Slave%E5%AE%9E%E7%8E%B0%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90(iOS)/"/>
-    <id>http://blog.darkangel7.com/2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/</id>
-    <published>2017-04-28T10:37:30.000Z</published>
-    <updated>2017-04-28T10:37:32.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>[TOC]</p>
+</span>
+    <h1 class="post-title"></h1>
+    <span id="busuanzi_value_page_pv"></span>次阅读
+    <span class="ds-thread-count" data-thread-key="2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/"></span>
+    <section class="post-content">
+      <p>[TOC]</p>
 <h1 id="Jenkins部署MacOS-Slave实现持续集成-iOS"><a href="#Jenkins部署MacOS-Slave实现持续集成-iOS" class="headerlink" title="Jenkins部署MacOS Slave实现持续集成(iOS)"></a>Jenkins部署MacOS Slave实现持续集成(iOS)</h1><p>解决Linux服务器上的Jenkins无法构建Xcode工程</p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Linux服务器无法安装Xcode，所以Jenkins无法通过shell来调用xcodebuild、xcrun等命令来构建Xcode工程，因此无法持续集成，敏捷开发。下面介绍一种配置Jenkins节点的方式，来实现Linux上的Jenkins构建Xcode工程，并上传ipa到蒲公英pgyer来进行测试。</p>
 <h2 id="一、配置MacOS-Slave"><a href="#一、配置MacOS-Slave" class="headerlink" title="一、配置MacOS Slave"></a>一、配置MacOS Slave</h2><p>Jenkins有个强大的功能，配置Slave(奴隶)服务器，来实现分布式部署构建。具体步骤如下：</p>
@@ -98,143 +136,108 @@ https://www.pgyer.com/apiv1/app/upload
 <li><a href="https://www.pgyer.com/doc/view/jenkins_ios" target="_blank" rel="external">使用 Jenkins 实现持续集成 (iOS)</a></li>
 <li><a href="https://www.pgyer.com/doc/view/jenkins" target="_blank" rel="external">使用 Jenkins 实现持续集成 (Android)</a></li>
 </ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;[TOC]&lt;/p&gt;
-&lt;h1 id=&quot;Jenkins部署MacOS-Slave实现持续集成-iOS&quot;&gt;&lt;a href=&quot;#Jenkins部署MacOS-Slave实现持续集成-iOS&quot; class=&quot;headerlink&quot; title=&quot;Jenkins部署MacOS Slav
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Hexo+Github的Blog搭建</title>
-    <link href="http://blog.darkangel7.com/2016/08/19/Hexo+Github%E7%9A%84Blog%E6%90%AD%E5%BB%BA/"/>
-    <id>http://blog.darkangel7.com/2016/08/19/Hexo+Github的Blog搭建/</id>
-    <published>2016-08-19T04:40:16.000Z</published>
-    <updated>2016-08-26T03:32:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h1><h2 id="一、安装Homebrew"><a href="#一、安装Homebrew" class="headerlink" title="一、安装Homebrew"></a>一、安装Homebrew</h2><p>Mac上已经安装了ruby环境，只需要输入</p>
-<pre><code>ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
-</code></pre><h2 id="二、安装node-js"><a href="#二、安装node-js" class="headerlink" title="二、安装node.js"></a>二、安装node.js</h2><pre><code>sudo brew install node
-</code></pre><h2 id="三、安装Hexo"><a href="#三、安装Hexo" class="headerlink" title="三、安装Hexo"></a>三、安装Hexo</h2><p>Hexo是基于node.js的博客系统，这里安装就可以了。</p>
-<pre><code>sudo npm install -g hexo 
-npm install hexo-renderer-ejs --save
-npm install hexo-renderer-stylus --save
-npm install hexo-renderer-marked --save
-</code></pre><p>安装完成后，找一个放blog的目录</p>
-<pre><code>cd ~/Blog
-</code></pre><p>然后执行初始化</p>
-<pre><code>hexo init
-</code></pre><p>然后可以直接预览hello word.md</p>
-<pre><code>hexo g
-hexo s
-=&gt; [info] Hexo is running at localhost:4000/. Press Ctrl+C to stop.
-</code></pre><p>g是generate, s是server，还有d是deploy（部署）推荐用首字母，方便快捷。</p>
-<h2 id="四、创建Blog-Repository"><a href="#四、创建Blog-Repository" class="headerlink" title="四、创建Blog Repository"></a>四、创建Blog Repository</h2><p>在自己的Github创建Blog的仓库，如Blog-Hexo，命名无所谓。记住勾选README。</p>
-<p><img src="http://ww4.sinaimg.cn/large/65e4f1e6jw1f72qarsjd9j20va0aydh0.jpg" alt="repository1"></p>
-<p><img src="http://ww2.sinaimg.cn/large/65e4f1e6jw1f72qbhppqfj214a0sqq6q.jpg" alt="repository2"><br>创建完毕，直接进行到下一步。</p>
-<h2 id="五、购买域名"><a href="#五、购买域名" class="headerlink" title="五、购买域名"></a>五、购买域名</h2><p>推荐在万网购买，国外的Godaddy也可以。以万网为例：<br>买好域名实名认证了之后，到<code>控制台</code> - <code>云解析DNS</code>中添加一个解析，如：</p>
-<p><img src="http://ww4.sinaimg.cn/large/65e4f1e6jw1f72qblgcswj21kw01qglt.jpg" alt=""></p>
-<p>CNAME映射到自己的xxx.github.io。这里的xxx是你的在github的名称，我的是<code>DarkAngel7</code>。<br>在终端中输入</p>
-<pre><code>dig blog.darkangel7.com +nostats +nocomments +nocmd
-</code></pre><p>如果出现下面的结果，证明解析成功。</p>
-<pre><code>DarkAngel-MacBook-Pro-2:Blog DarkAngel$ dig blog.darkangel7.com +nostats +nocomments +nocmd
 
-; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; blog.darkangel7.com +nostats +nocomments +nocmd
-;; global options: +cmd
-;blog.darkangel7.com.        IN    A
-blog.darkangel7.com.    30    IN    CNAME    darkangel7.github.io.
-darkangel7.github.io.    2516    IN    CNAME    github.map.fastly.net.
-github.map.fastly.net.    30    IN    CNAME    prod.github.map.fastlylb.net.
-prod.github.map.fastlylb.net. 30 IN    A    151.101.100.133
-</code></pre><h2 id="六、Deploy"><a href="#六、Deploy" class="headerlink" title="六、Deploy"></a>六、Deploy</h2><p>上一步完成域名到github pages的单向映射。本步完成github到域名的映射，完成输入域名解析到对应的内容。</p>
-<p>首先在Blog/source里创建CNAME</p>
-<pre><code>cd source
-touch CNAME
-vi CNAME
-</code></pre><p>输入你在上一步CNAME的域名，建立映射关系。</p>
-<pre><code>blog.darkangel7.com
-</code></pre><p>修改<code>_config.yml</code>文件，配置一些东西。</p>
-<pre><code># Deployment
-## Docs: https://hexo.io/docs/deployment.html
-deploy:
-      type: git
-      repository: git@github.com:DarkAngel7/Blog-Hexo.git
-</code></pre><p>安装git插件</p>
-<pre><code>npm install hexo-deployer-git --save
-</code></pre><p>这里repository的地址可以是https的，也可以是git的，只不过git需要SSH证书，一般用https就可以了，如果出现443错误，替换成git。</p>
-<p>然后在Blog目录下</p>
-<pre><code>hexo g -d
-</code></pre><p>生成静态文件并且部署出去，不出意外，已经可以外网访问了。</p>
-<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="一、访问速度"><a href="#一、访问速度" class="headerlink" title="一、访问速度"></a>一、访问速度</h2><p>由于Google被墙，大部分主题中引用的jquery都会因为超时（可以Blog目录下搜索google），而造成页面访问很慢，这里需要将jquery改为百度的</p>
-<pre><code>&lt;script src=&quot;//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js&quot;&gt;&lt;/script&gt;
-</code></pre><h2 id="二、RSS订阅"><a href="#二、RSS订阅" class="headerlink" title="二、RSS订阅"></a>二、RSS订阅</h2><p>输入命令</p>
-<pre><code>$ npm install hexo-generator-feed --save
-</code></pre><p>然后在_config.yml中，添加    </p>
-<pre><code>rss: /atom.xml
-feed:
-     type: atom
-    path: atom.xml
-     limit: 20
-</code></pre><h2 id="三、搜索支持"><a href="#三、搜索支持" class="headerlink" title="三、搜索支持"></a>三、搜索支持</h2><p>现在在百度和Google是搜不到你的网站的，为了让搜索引擎搜索到，需要添加sitemap.xml。首先输入：</p>
-<pre><code>npm install hexo-generator-sitemap --save
-npm install hexo-generator-baidu-sitemap --save
-</code></pre><p>然后在<code>_config.yml</code>文件中添加</p>
-<pre><code>sitemap:
-         path: sitemap.xml
-baidusitemap:
-         path: baidusitemap.xml
-</code></pre><p>当前最好还是自己到搜索引擎提交</p>
-<ul>
-<li><a href="https://www.google.com/webmasters/tools/home?hl=zh-CN" target="_blank" rel="external">Google搜索引擎提交入口</a></li>
-<li><a href="http://www.baidu.com/search/url_submit.htm" target="_blank" rel="external">百度搜索引擎入口</a></li>
-</ul>
-<p>先验证网站所有权，下载html，mv到Blog/themes/yourtheme/source目录下，执行</p>
-<pre><code>hexo g -d
-</code></pre><p>验证成功后，添加百度自动推送脚本，最好在<code>head.ejs</code>中添加百度自动推送的代码，至于<code>head.ejs</code>文件位置，在你使用的theme文件夹下搜索吧。<br>谷歌的话，在<code>抓取</code>-<code>站点地图</code>里面添加就好。</p>
-<h2 id="四、评论功能"><a href="#四、评论功能" class="headerlink" title="四、评论功能"></a>四、评论功能</h2><p>可以使用<a href="http://duoshuo.com" target="_blank" rel="external">多说</a>来提供评论功能。首先，在<code>_config.yml</code>文件中添加</p>
-<pre><code># Duoshuo
-duoshuo_shortname: yoursite.doushuo.com
-</code></pre><p>  然后，搜索themes文件夹下，你使用的theme文件目录下的<code>commemt.ejs</code>（不同的theme可能位置不同，请自行寻找）。修改如下：</p>
-<pre><code> &lt;div id=&quot;comment&quot; class=&quot;comments-area&quot;&gt;
-     &lt;% if(config.duoshuo_shortname) { %&gt;
-     &lt;! -- 多说的代码 --&gt; 
-     &lt;% } %&gt; 
-&lt;/div&gt;    
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Dark Angel</h4>
+    <p>iOS界的低调探索者</p>
+</section>
+    <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2016/08/19/Hexo+Github的Blog搭建/">
+        Hexo+Github的Blog搭建 →
+    </a>
+    
+</nav>
 
- 如果报关于data-thread-key的错误，则改成下面这样：
- &lt;div class=&quot;ds-thread&quot; data-thread-key=&quot;&lt;%= page.path %&gt;&quot; data-title=&quot;&lt;%= page.title %&gt;&quot; data-url=&quot;&lt;%= page.permalink %&gt;&quot;&gt;&lt;/div    &gt;
-</code></pre><h2 id="五、分享功能"><a href="#五、分享功能" class="headerlink" title="五、分享功能"></a>五、分享功能</h2><p>可以在Blog目录下搜索<code>post/share</code>，一般在<code>article.ejs</code>文件中，或者<code>post.ejs</code>文件中，然后替换</p>
-<pre><code>&lt;%- partial(&#39;post/author&#39;) %&gt;
-</code></pre><p>为<a href="http://share.baidu.com/code" target="_blank" rel="external">百度分享</a>提供的代码。</p>
-<h2 id="六、个人信息完善"><a href="#六、个人信息完善" class="headerlink" title="六、个人信息完善"></a>六、个人信息完善</h2><p>网站的信息一般都在<code>Blog/_config.yml</code>中修改。</p>
-<p>关于Theme，去官方提供的<a href="https://github.com/tommy351/hexo/wiki/Themes" target="_blank" rel="external">主题列表</a>中选个现成的，按照里面的方法pull下来，如light主题</p>
-<pre><code>$ git clone git://github.com/tommy351/hexo-theme-light.git themes/light
-</code></pre><p>然后在<code>_config.yml</code>配置文件中设置：</p>
-<pre><code>theme: light
-</code></pre><p>关于主题的优化，一般在<code>themes/yourtheme/_config.yml</code>中配置。</p>
-<h1 id="写文章"><a href="#写文章" class="headerlink" title="写文章"></a>写文章</h1><p>在Blog目录下，创建</p>
-<pre><code>hexo new 文章题目
-</code></pre><p>然后用Markdown编写，写好后save。</p>
-<pre><code>hexo g
-hexo s
-</code></pre><p>生成，然后在本地localhost:4000预览一下，如果没有问题，就可以发布了。</p>
-<pre><code>hexo d
-</code></pre><p>所有的文章都是放在<code>Blog/source/_posts/</code>目录下的，可以随时编辑修改。</p>
-<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>还有一些其他的修改，这里就不一一提了，等待你慢慢发现。现在快开始写作吧~~</p>
-]]></content>
+  <div id="comment" class="comments-area">
     
-    <summary type="html">
+    	<!-- 多说评论框 start -->
+　	<div class="ds-thread" data-thread-key="2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/" data-title="" data-url="http://blog.darkangel7.com/2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/" data-auth-key="1"</div>	
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+		var duoshuoQuery = {short_name:"darkangel"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+		 	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+	</script>
+	<!-- 多说公共JS代码 end -->
     
-      &lt;h1 id=&quot;安装：&quot;&gt;&lt;a href=&quot;#安装：&quot; class=&quot;headerlink&quot; title=&quot;安装：&quot;&gt;&lt;/a&gt;安装：&lt;/h1&gt;&lt;h2 id=&quot;一、安装Homebrew&quot;&gt;&lt;a href=&quot;#一、安装Homebrew&quot; class=&quot;headerlink&quot; titl
-    
-    </summary>
-    
-    
-  </entry>
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
   
-</feed>
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">Subscribe!</span></a>
+  
+  <div class="inner">
+     <section class="copyright">原创文章，版权声明：署名-非商业性使用-相同方式共享 2.5</section>
+     <section class="copyright"><a href="/">Dark Angel</a> &copy; 2016 &bull; All Rights Reserved.</section>
+     <section class="poweredby">Powered By Hexo</section>
+  </div>
+</footer>
+
+      <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/8.5/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https'){
+   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-news"  href="/archives"><span>Archive</span></a>
+
+          <a class="icon-wiki"  href="https://github.com/DarkAngel7"><span>Github</span></a>
+
+          <a class="icon-Favorites"  href="/atom.xml"><span>Rss</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>
