@@ -1,0 +1,1 @@
+http://blog.darkangel7.com/2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/
