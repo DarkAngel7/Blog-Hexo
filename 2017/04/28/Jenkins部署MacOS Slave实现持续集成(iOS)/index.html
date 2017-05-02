@@ -103,15 +103,15 @@
 <p>这里使用的脚本。</p>
 <pre><code>export LANG=&quot;en_US.UTF-8&quot;
 
-security -v unlock-keychain -p &quot;qinqin&quot;
+security -v unlock-keychain -p &quot;yourpassword&quot;
 
 ipa_name=&quot;URWork_iOS_beta&quot;
 build_path=&quot;${WORKSPACE}/build/&quot;
 fastlane gym --workspace URWorkClient.xcworkspace --scheme URWorkClient --clean --configuration Beta --export_method ad-hoc --output_name ${ipa_name} --output_directory ${build_path}
 
 curl -F &quot;file=@${build_path}${ipa_name}.ipa&quot; \
--F &quot;uKey=f3f26f387cb7bbda48b64f25db6eb50d&quot; \
--F &quot;_api_key=d469dfcad5080c9d881a891201556c2a&quot; \
+-F &quot;uKey=yourUKey&quot; \
+-F &quot;_api_key=yourApiKey&quot; \
 -F &quot;updateDescription=${News}&quot; \
 https://www.pgyer.com/apiv1/app/upload
 </code></pre><h4 id="最重要、最重要、最重要："><a href="#最重要、最重要、最重要：" class="headerlink" title="最重要、最重要、最重要："></a><strong>最重要、最重要、最重要：</strong></h4><p>Linux服务器上的Jenkins调用Mac Slave时，是通过之前设置的<strong>SSH</strong>登录的方式，而Apple为了安全，在ssh登录时，是不允许读取<strong>Keychains</strong>（钥匙串）的，所以 <code>security -v unlock-keychain -p &quot;yourpassword&quot;</code>这行命令就很重要了。在构建打包前，先解锁Keychains。</p>

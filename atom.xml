@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-04-28T11:09:27.000Z</updated>
+  <updated>2017-05-02T02:44:38.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2017/04/28/Jenkins%E9%83%A8%E7%BD%B2MacOS%20Slave%E5%AE%9E%E7%8E%B0%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90(iOS)/"/>
     <id>http://blog.darkangel7.com/2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/</id>
     <published>2017-04-28T10:49:16.000Z</published>
-    <updated>2017-04-28T11:09:27.000Z</updated>
+    <updated>2017-05-02T02:44:38.000Z</updated>
     
     <content type="html"><![CDATA[<p>解决Linux服务器上的Jenkins无法构建Xcode工程</p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Linux服务器无法安装Xcode，所以Jenkins无法通过shell来调用xcodebuild、xcrun等命令来构建Xcode工程，因此无法持续集成，敏捷开发。下面介绍一种配置Jenkins节点的方式，来实现Linux上的Jenkins构建Xcode工程，并上传ipa到蒲公英pgyer来进行测试。</p>
@@ -65,15 +65,15 @@
 <p>这里使用的脚本。</p>
 <pre><code>export LANG=&quot;en_US.UTF-8&quot;
 
-security -v unlock-keychain -p &quot;qinqin&quot;
+security -v unlock-keychain -p &quot;yourpassword&quot;
 
 ipa_name=&quot;URWork_iOS_beta&quot;
 build_path=&quot;${WORKSPACE}/build/&quot;
 fastlane gym --workspace URWorkClient.xcworkspace --scheme URWorkClient --clean --configuration Beta --export_method ad-hoc --output_name ${ipa_name} --output_directory ${build_path}
 
 curl -F &quot;file=@${build_path}${ipa_name}.ipa&quot; \
--F &quot;uKey=f3f26f387cb7bbda48b64f25db6eb50d&quot; \
--F &quot;_api_key=d469dfcad5080c9d881a891201556c2a&quot; \
+-F &quot;uKey=yourUKey&quot; \
+-F &quot;_api_key=yourApiKey&quot; \
 -F &quot;updateDescription=${News}&quot; \
 https://www.pgyer.com/apiv1/app/upload
 </code></pre><h4 id="最重要、最重要、最重要："><a href="#最重要、最重要、最重要：" class="headerlink" title="最重要、最重要、最重要："></a><strong>最重要、最重要、最重要：</strong></h4><p>Linux服务器上的Jenkins调用Mac Slave时，是通过之前设置的<strong>SSH</strong>登录的方式，而Apple为了安全，在ssh登录时，是不允许读取<strong>Keychains</strong>（钥匙串）的，所以 <code>security -v unlock-keychain -p &quot;yourpassword&quot;</code>这行命令就很重要了。在构建打包前，先解锁Keychains。</p>
