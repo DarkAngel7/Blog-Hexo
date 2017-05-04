@@ -55,12 +55,23 @@
           2017-04-28
       </time>
     
+    
+    | 
+    <a href='/tags/iOS技术分享/'>iOS技术分享</a>
+    
+    
 </span>
     <h1 class="post-title">Jenkins部署MacOS Slave实现持续集成(iOS)</h1>
     <span id="busuanzi_value_page_pv"></span>次阅读
     <span class="ds-thread-count" data-thread-key="2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/"></span>
     <section class="post-content">
-      <p>解决Linux服务器上的Jenkins无法构建Xcode工程</p>
+     	
+              <div id="toc" class="toc-article">
+                <strong class="toc-title">本文目录</strong>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一、配置MacOS-Slave"><span class="toc-text">一、配置MacOS Slave</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-配置Mac电脑。"><span class="toc-text">1. 配置Mac电脑。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-创建节点。"><span class="toc-text">2. 创建节点。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-配置节点。"><span class="toc-text">3. 配置节点。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-最后保存。"><span class="toc-text">4. 最后保存。</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、配置Jenkins系统设置。"><span class="toc-text">二、配置Jenkins系统设置。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-上传证书和描述文件。"><span class="toc-text">1. 上传证书和描述文件。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-在-Jenkins-gt-系统管理-gt-系统设置（全局设置）中设置："><span class="toc-text">2. 在 Jenkins > 系统管理 > 系统设置（全局设置）中设置：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-在-Jenkins-gt-系统管理-gt-Configure-Global-Security-中配置："><span class="toc-text">3. 在 Jenkins > 系统管理 > Configure Global Security 中配置：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、配置iOS项目。"><span class="toc-text">三、配置iOS项目。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-安装插件。"><span class="toc-text">1. 安装插件。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Jenkins-gt-新建。"><span class="toc-text">2. Jenkins > 新建。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-General"><span class="toc-text">3. General.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-源码管理。"><span class="toc-text">4. 源码管理。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-构建触发器。"><span class="toc-text">5. 构建触发器。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-构建环境。"><span class="toc-text">6. 构建环境。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-构建"><span class="toc-text">7. 构建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#最重要、最重要、最重要："><span class="toc-text">最重要、最重要、最重要：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-构建后操作。"><span class="toc-text">8. 构建后操作。</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、整体测试"><span class="toc-text">四、整体测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-打开Jenkins。"><span class="toc-text">1. 打开Jenkins。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-点击develop-iOS。"><span class="toc-text">2. 点击develop_iOS。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-点击Build-with-Parameters"><span class="toc-text">3. 点击Build with Parameters.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-开始构建。"><span class="toc-text">4. 开始构建。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-等待构建完成即可。"><span class="toc-text">5. 等待构建完成即可。</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、总结。"><span class="toc-text">五、总结。</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#附"><span class="toc-text">附</span></a></li></ol>
+              </div>
+            
+	 <p>解决Linux服务器上的Jenkins无法构建Xcode工程</p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Linux服务器无法安装Xcode，所以Jenkins无法通过shell来调用xcodebuild、xcrun等命令来构建Xcode工程，因此无法持续集成，敏捷开发。下面介绍一种配置Jenkins节点的方式，来实现Linux上的Jenkins构建Xcode工程，并上传ipa到蒲公英pgyer来进行测试。</p>
 <h2 id="一、配置MacOS-Slave"><a href="#一、配置MacOS-Slave" class="headerlink" title="一、配置MacOS Slave"></a>一、配置MacOS Slave</h2><p>Jenkins有个强大的功能，配置Slave(奴隶)服务器，来实现分布式部署构建。具体步骤如下：</p>
 <h3 id="1-配置Mac电脑。"><a href="#1-配置Mac电脑。" class="headerlink" title="1. 配置Mac电脑。"></a>1. 配置Mac电脑。</h3><p>在<strong>系统偏好设置</strong> &gt; <strong>共享</strong> 中开启 <strong>远程登录</strong>，如下图：<br><img src="https://ww3.sinaimg.cn/large/006tNc79ly1ff2hls2iauj31140tidjg.jpg" alt=""> </p>
@@ -151,6 +162,10 @@ https://www.pgyer.com/apiv1/app/upload
     </footer>
   </article>
   <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/05/04/在iOSApp内优雅的动态切换语言/">
+        ← 在iOS App内优雅的动态切换语言
+    </a>
     
     <span class="icon-logo">•</span>
     

@@ -60,7 +60,13 @@
     <span id="busuanzi_value_page_pv"></span>次阅读
     <span class="ds-thread-count" data-thread-key="2016/08/19/Hexo+Github的Blog搭建/"></span>
     <section class="post-content">
-      <h1 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h1><h2 id="一、安装Homebrew"><a href="#一、安装Homebrew" class="headerlink" title="一、安装Homebrew"></a>一、安装Homebrew</h2><p>Mac上已经安装了ruby环境，只需要输入</p>
+     	
+              <div id="toc" class="toc-article">
+                <strong class="toc-title">本文目录</strong>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#安装："><span class="toc-text">安装：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、安装Homebrew"><span class="toc-text">一、安装Homebrew</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、安装node-js"><span class="toc-text">二、安装node.js</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、安装Hexo"><span class="toc-text">三、安装Hexo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、创建Blog-Repository"><span class="toc-text">四、创建Blog Repository</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、购买域名"><span class="toc-text">五、购买域名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、Deploy"><span class="toc-text">六、Deploy</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#优化"><span class="toc-text">优化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、访问速度"><span class="toc-text">一、访问速度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、RSS订阅"><span class="toc-text">二、RSS订阅</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、搜索支持"><span class="toc-text">三、搜索支持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、评论功能"><span class="toc-text">四、评论功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、分享功能"><span class="toc-text">五、分享功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、个人信息完善"><span class="toc-text">六、个人信息完善</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#写文章"><span class="toc-text">写文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+              </div>
+            
+	 <h1 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h1><h2 id="一、安装Homebrew"><a href="#一、安装Homebrew" class="headerlink" title="一、安装Homebrew"></a>一、安装Homebrew</h2><p>Mac上已经安装了ruby环境，只需要输入</p>
 <pre><code>ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
 </code></pre><h2 id="二、安装node-js"><a href="#二、安装node-js" class="headerlink" title="二、安装node.js"></a>二、安装node.js</h2><pre><code>sudo brew install node
 </code></pre><h2 id="三、安装Hexo"><a href="#三、安装Hexo" class="headerlink" title="三、安装Hexo"></a>三、安装Hexo</h2><p>Hexo是基于node.js的博客系统，这里安装就可以了。</p>
@@ -113,32 +119,56 @@ deploy:
 <p>然后在Blog目录下</p>
 <pre><code>hexo g -d
 </code></pre><p>生成静态文件并且部署出去，不出意外，已经可以外网访问了。</p>
-<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="一、访问速度"><a href="#一、访问速度" class="headerlink" title="一、访问速度"></a>一、访问速度</h2><p>由于Google被墙，大部分主题中引用的jquery都会因为超时（可以Blog目录下搜索google），而造成页面访问很慢，这里需要将jquery改为百度的</p>
+<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="一、访问速度"><a href="#一、访问速度" class="headerlink" title="一、访问速度"></a>一、访问速度</h2><p>由于Google被墙，大部分主题中引用的jquery都会因为超时（可以Blog目录下搜索google），而造成页面访问很慢，这里需要将jquery改为百度的<br>​    </p>
 <pre><code>&lt;script src=&quot;//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js&quot;&gt;&lt;/script&gt;
 </code></pre><h2 id="二、RSS订阅"><a href="#二、RSS订阅" class="headerlink" title="二、RSS订阅"></a>二、RSS订阅</h2><p>输入命令</p>
 <pre><code>$ npm install hexo-generator-feed --save
-</code></pre><p>然后在_config.yml中，添加    </p>
+</code></pre><p>然后在_config.yml中，添加<br>​    </p>
 <pre><code>rss: /atom.xml
 feed:
      type: atom
     path: atom.xml
      limit: 20
-</code></pre><h2 id="三、搜索支持"><a href="#三、搜索支持" class="headerlink" title="三、搜索支持"></a>三、搜索支持</h2><p>现在在百度和Google是搜不到你的网站的，为了让搜索引擎搜索到，需要添加sitemap.xml。首先输入：</p>
-<pre><code>npm install hexo-generator-sitemap --save
-npm install hexo-generator-baidu-sitemap --save
-</code></pre><p>然后在<code>_config.yml</code>文件中添加</p>
-<pre><code>sitemap:
-         path: sitemap.xml
-baidusitemap:
-         path: baidusitemap.xml
-</code></pre><p>当前最好还是自己到搜索引擎提交</p>
+</code></pre><h2 id="三、搜索支持"><a href="#三、搜索支持" class="headerlink" title="三、搜索支持"></a>三、搜索支持</h2><p>现在在百度和Google是搜不到你的网站的，为了让搜索引擎搜索到，需要做一些工作。</p>
+<p>搜索引擎入口</p>
 <ul>
 <li><a href="https://www.google.com/webmasters/tools/home?hl=zh-CN" target="_blank" rel="external">Google搜索引擎提交入口</a></li>
 <li><a href="http://www.baidu.com/search/url_submit.htm" target="_blank" rel="external">百度搜索引擎入口</a></li>
 </ul>
-<p>先验证网站所有权，下载html，mv到Blog/themes/yourtheme/source目录下，执行</p>
+<p>添加sitemap.xml：</p>
+<p>首先输入：</p>
+<pre><code>npm install hexo-generator-sitemap --save
+npm install hexo-generator-baidu-sitemap --save    
+npm install hexo-baidu-url-submit --save
+</code></pre><p>前两个插件用于生产sitemap，后一个插件用于主动推送链接到百度（<strong>防止百度爬虫抓取失败，导致百度搜不到您的博客</strong>）。</p>
+<p>然后在<code>_config.yml</code>文件中添加</p>
+<pre><code>sitemap:
+         path: sitemap.xml
+baidusitemap:
+         path: baidusitemap.xml
+
+## BaiduUrlSubmit: http://hui-wang.info/2016/10/23/Hexo插件之百度主动提交链接/    
+baidu_url_submit:        ##主动推送新文章到百度
+  count: 3 ## 比如3，代表提交最新的三个链接
+  host: blog.darkangel7.com ## 在百度站长平台中注册的域名
+  token: your_token ## 请注意这是您的秘钥， 请不要发布在公众仓库里!
+  path: baidu_urls.txt ## 文本文档的地址， 新链接会保存在此文本文档里
+
+##同时要检查这里有没有URL值，必须包含是百度站长平台注册的域名，比如 
+# URL
+url: http://blog.darkangel7.com
+root: /
+permalink: :year/:month/:day/:title/
+
+##最后，加入新的deployer，如
+deploy:
+- type: git
+  repository: git@github.com:DarkAngel7/Blog-Hexo.git
+- type: baidu_url_submitter  ## 百度链接主动推送
+</code></pre><p>先验证网站所有权，下载html，mv到Blog/themes/yourtheme/source目录下，执行</p>
 <pre><code>hexo g -d
 </code></pre><p>验证成功后，添加百度自动推送脚本，最好在<code>head.ejs</code>中添加百度自动推送的代码，至于<code>head.ejs</code>文件位置，在你使用的theme文件夹下搜索吧。<br>谷歌的话，在<code>抓取</code>-<code>站点地图</code>里面添加就好。</p>
+<p>这样主动推送与自动推送结合，能很好的提高您文章的曝光率。    </p>
 <h2 id="四、评论功能"><a href="#四、评论功能" class="headerlink" title="四、评论功能"></a>四、评论功能</h2><p>可以使用<a href="http://duoshuo.com" target="_blank" rel="external">多说</a>来提供评论功能。首先，在<code>_config.yml</code>文件中添加</p>
 <pre><code># Duoshuo
 duoshuo_shortname: yoursite.doushuo.com

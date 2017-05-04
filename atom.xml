@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-02T02:44:38.000Z</updated>
+  <updated>2017-05-04T11:10:56.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -16,11 +16,246 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>在iOS App内优雅的动态切换语言</title>
+    <link href="http://blog.darkangel7.com/2017/05/04/%E5%9C%A8iOSApp%E5%86%85%E4%BC%98%E9%9B%85%E7%9A%84%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2%E8%AF%AD%E8%A8%80/"/>
+    <id>http://blog.darkangel7.com/2017/05/04/在iOSApp内优雅的动态切换语言/</id>
+    <published>2017-05-04T03:46:56.000Z</published>
+    <updated>2017-05-04T11:10:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>随着公司业务的发展，App版本的迭代，相信不少App都需要英文化（国际化）。App英文化，不外乎这三点：</p>
+<ol>
+<li>纯代码中引用的strings国际化；</li>
+<li>Storyboard/Xib国际化；</li>
+<li>Info.plist国际化。</li>
+</ol>
+<p>具体这三种分别如何操作，怎么国际化，这里不再赘述。一般App做了国际化，那么在用户切换手机系统Settings里的Language时，App就会切换成对应的语言（前提是做个该语言国际化）。那么如果想实现<strong>微博</strong>和<strong>微信</strong>等App，在App内部实现切换语言，应该怎么做呢？如何做，才能更加优雅的动态切换语言呢？</p>
+<p>下面，讲一讲如何在iOS App内优雅的动态切换语言。</p>
+<h1 id="调研"><a href="#调研" class="headerlink" title="调研"></a>调研</h1><p>如果有相关需求，一般成熟的App都会怎么做呢？这里我们来看一下<strong>微博</strong>和<strong>微信</strong>。</p>
+<p><strong>微博</strong>：</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tKfTcly1ff9jfo5a8ig306y0cctz0.gif" alt=""></p>
+<p><strong>微信</strong>：</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tKfTcly1ff9d5ezj9jg30680b3kif.gif" alt=""></p>
+<p>对比一下可以看出，微博整体的效果比微信好很多，丝滑流畅。</p>
+<p><strong><em>这里注意一下细节</em></strong>：我在微博的个人中心是故意上滑了一下，然后点击进入设置，进行语言切换，可以看到切换时很自然，然后返回个人中心时，页面<code>scrollView</code>的<code>contentOffset</code>并没有发生变化，由此可以推测：</p>
+<p><strong><u>微博的思路是，在切换语言时，发送通知<code>NSNotification</code>，所有的UI控件监听通知，然后在适当的时候刷新UI</u></strong>。那么其实这么写，需要做的东西很多，或是通过Base类来实现，或是通过<code>runtime</code>实现，总之<code>Button</code>、<code>Label</code>、<code>TextField</code>等等都需要有一套统一的更新机制，可能不是一个最简单的办法。</p>
+<p><strong><u>而微信切换的方案是，刷新<code>keyWindow</code>的<code>rootViewController</code>，然后跳转到设置页，所以你会看到切换语言的一瞬间界面出现匪夷所思的bug，如下图</u></strong></p>
+<p><img src="http://ww1.sinaimg.cn/large/006tKfTcly1ff9iduf60aj306y0cbjrm.jpg" alt=""></p>
+<p>其实微信的方案是个最简单的方案，只不过没有处理好这个小系统bug。</p>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><h2 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h2><h3 id="NSBundle"><a href="#NSBundle" class="headerlink" title="NSBundle"></a>NSBundle</h3><p>其实大家应该知道，无论是代码还是Storyboard/Xib，显示的国际化字符串都会走这个方法，传入一个<code>key</code>，获取<code>localizedString</code>。</p>
+<p><code>NSBundle</code>的方法：</p>
+<pre><code class="objective-c">- (NSString *)localizedStringForKey:(NSString *)key value:(nullable NSString *)value table:(nullable NSString *)tableName;
+</code></pre>
+<p>比如我们常用的宏<code>NSLocalizedString(@&quot;done&quot;, nil)</code></p>
+<pre><code class="objective-c">#define NSLocalizedString(key, comment) \
+        [NSBundle.mainBundle localizedStringForKey:(key) value:@&quot;&quot; table:nil]
+</code></pre>
+<p>那么为何，系统切换语言的时候，此方法返回的就是对应语言（前提做了该语言的国际化）的字符串呢？原因在是哪个<code>Object</code>调用了这个方法，一般默认的都是<code>NSBundle.mainBundle</code>这个对象。系统语言是en，<code>NSBundle.mainBundle</code>就是</p>
+<pre><code>po [NSBundle mainBundle]
+
+NSBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/016AC9F4-91F5-41A7-A054-81621955D472/URWorkClient.app/en.lproj&gt;
+</code></pre><p>而是默认中文语言时，</p>
+<pre><code>po [NSBundle mainBundle]
+
+UWBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/016AC9F4-91F5-41A7-A054-81621955D472/URWorkClient.app&gt; (loaded)
+</code></pre><p>所以，切换语言，其实切换了<code>bundle</code>对象，所以不同语言的<code>bundle</code>对象，就会根据<code>key</code>返回不同的<code>localizedString</code>。</p>
+<h3 id="NSUserDefaults"><a href="#NSUserDefaults" class="headerlink" title="NSUserDefaults"></a>NSUserDefaults</h3><p>其实语言设置，只要修改<code>AppleLanguages</code>对应的值就好了。这样才能加载正确语言的<code>Storyboard/Xib</code>，以及一些<code>resources</code>(图片之类的)。</p>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>方案其实很简单，每次切换语言，把用户选择的语言保存在本地，同时更改<code>bundle</code>对象，然后刷新页面就可以了。</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tKfTcly1ff9ji4gz3kg306y0cce09.gif" alt=""></p>
+<h2 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h2><h3 id="保存用户设置"><a href="#保存用户设置" class="headerlink" title="保存用户设置"></a>保存用户设置</h3><p>很简单，保存在<code>NSUserDefaults</code>里。</p>
+<p>这里需要说明的是<strong>跟随手机系统</strong>，即清除用户自定义设置，只需要将<code>AppleLanguages</code>字段设为<code>nil</code>即可。</p>
+<p>但是当<code>AppleLanguages</code>字段设为nil，你再去获取它的值时，会发现他已经变成了系统语言的默认值。</p>
+<p>.h</p>
+<pre><code class="objective-c">/**
+ 设置类
+ */
+@interface UWConfig : NSObject
+/**
+ 用户自定义使用的语言，当传nil时，等同于resetSystemLanguage
+ */
+@property (class, nonatomic, strong, nullable) NSString *userLanguage;
+/**
+ 重置系统语言
+ */
++ (void)resetSystemLanguage;
+@end
+</code></pre>
+<p>.m</p>
+<pre><code class="objective-c">#import &quot;UWConfig.h&quot;
+
+static NSString *const UWUserLanguageKey = @&quot;UWUserLanguageKey&quot;;
+#define STANDARD_USER_DEFAULT  [NSUserDefaults standardUserDefaults]
+
+@implementation UWConfig
++ (void)setUserLanguage:(NSString *)userLanguage
+{
+    //跟随手机系统
+    if (!userLanguage.length) {
+        [self resetSystemLanguage];
+        return;
+    }
+    //用户自定义
+    [STANDARD_USER_DEFAULT setValue:userLanguage forKey:UWUserLanguageKey];
+    [STANDARD_USER_DEFAULT setValue:@[userLanguage] forKey:@&quot;AppleLanguages&quot;];
+    [STANDARD_USER_DEFAULT synchronize];
+}
+
++ (NSString *)userLanguage
+{
+    return [STANDARD_USER_DEFAULT valueForKey:UWUserLanguageKey];
+}
+
+/**
+ 重置系统语言
+ */
++ (void)resetSystemLanguage
+{
+    [STANDARD_USER_DEFAULT removeObjectForKey:UWUserLanguageKey];
+    [STANDARD_USER_DEFAULT setValue:nil forKey:@&quot;AppleLanguages&quot;];
+    [STANDARD_USER_DEFAULT synchronize];
+}
+
+@end
+</code></pre>
+<p>在需要的地方调用即可，如</p>
+<pre><code class="objective-c">   if (indexPath.row == 0) {
+        [UWConfig setUserLanguage:nil];
+    } else if (indexPath.row == 1) {
+        [UWConfig setUserLanguage:@&quot;zh-Hans&quot;];
+    } else {
+        [UWConfig setUserLanguage:@&quot;en&quot;];
+    }
+</code></pre>
+<h3 id="切换Bundle"><a href="#切换Bundle" class="headerlink" title="切换Bundle"></a>切换Bundle</h3><p>当需要展示内容时，才需要用到<code>bundle</code>，我们要手动切换<code>bundle</code>对象，就用到了这几个方法：</p>
+<pre><code class="objective-c">+ (nullable instancetype)bundleWithPath:(NSString *)path;
+- (nullable instancetype)initWithPath:(NSString *)path NS_DESIGNATED_INITIALIZER;
+
++ (nullable instancetype)bundleWithURL:(NSURL *)url NS_AVAILABLE(10_6, 4_0);
+- (nullable instancetype)initWithURL:(NSURL *)url NS_AVAILABLE(10_6, 4_0);
+</code></pre>
+<p>这里直接上代码</p>
+<p>.h</p>
+<pre><code class="objective-c">@interface NSBundle (UWUtils)
+
++ (BOOL)isChineseLanguage;
+
++ (NSString *)currentLanguage;
+
+@end
+</code></pre>
+<p>.m</p>
+<pre><code class="objective-c">#import &quot;NSBundle+UWUtils.h&quot;
+
+@interface UWBundle : NSBundle
+
+@end
+
+@implementation NSBundle (UWUtils)
+
++ (BOOL)isChineseLanguage
+{
+    NSString *currentLanguage = [self currentLanguage];
+    if ([currentLanguage hasPrefix:@&quot;zh-Hans&quot;]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
++ (NSString *)currentLanguage
+{
+    return [UWConfig userLanguage] ? : [NSLocale preferredLanguages].firstObject;
+}
+
++ (void)load
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        //动态继承、交换，方法类似KVO，通过修改[NSBundle mainBundle]对象的isa指针，使其指向它的子类UWBundle，这样便可以调用子类的方法；其实这里也可以使用method_swizzling来交换mainBundle的实现，来动态判断，可以同样实现。
+        object_setClass([NSBundle mainBundle], [UWBundle class]);
+    });
+}
+
+@end
+
+@implementation UWBundle
+
+- (NSString *)localizedStringForKey:(NSString *)key value:(NSString *)value table:(NSString *)tableName
+{
+    if ([UWBundle uw_mainBundle]) {
+        return [[UWBundle uw_mainBundle] localizedStringForKey:key value:value table:tableName];
+    } else {
+        return [super localizedStringForKey:key value:value table:tableName];
+    }
+}
+
++ (NSBundle *)uw_mainBundle
+{
+    if ([NSBundle currentLanguage].length) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:[NSBundle currentLanguage] ofType:@&quot;lproj&quot;];
+        if (path.length) {
+            return [NSBundle bundleWithPath:path];
+        }
+    }
+    return nil;
+}
+
+@end
+</code></pre>
+<p>这里涉及到了<code>runtime</code>的使用，代码中有注释，这里就不展开了。</p>
+<h3 id="刷新页面"><a href="#刷新页面" class="headerlink" title="刷新页面"></a>刷新页面</h3><p>用微信的思路，简单化，不必要处理很多，我们只要替换<code>keyWindow</code>的<code>rootViewController</code>就好，同时解决微信的bug。</p>
+<pre><code class="objective-c">    UITabBarController *tbc = [[UIStoryboard storyboardWithName:@&quot;Main&quot; bundle:[NSBundle mainBundle]] instantiateInitialViewController];
+    //我这里的storyboard为了便于多人合作，这里只包含根tabBarController和多个nvc，每个nvc只有自己的rootViewController
+    //跳转到个人中心
+    tbc.selectedIndex = 4;
+    //创建设置页面
+    UWSettingViewController *vc1 = [[UIStoryboard storyboardWithName:@&quot;Main&quot; bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:NSStringFromClass([UWSettingViewController class])];
+    vc1.hidesBottomBarWhenPushed = YES;
+    //创建语言切换页
+    UWLanguageSettingsViewController *vc2 = [[UIStoryboard storyboardWithName:@&quot;Main&quot; bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:NSStringFromClass([UWLanguageSettingsViewController class])];
+    vc2.hidesBottomBarWhenPushed = YES;
+    UINavigationController *nvc = tbc.selectedViewController;
+    //备用
+    NSMutableArray *vcs = nvc.viewControllers.mutableCopy;
+    [vcs addObjectsFromArray:@[vc1, vc2]];
+    //解决奇怪的动画bug。异步执行
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //注意刷新rootViewController的时机，在主线程异步执行
+        //先刷新rootViewController
+        [UIApplication sharedApplication].keyWindow.rootViewController = tbc;
+        //然后再给个人中心的nvc设置viewControllers
+        nvc.viewControllers = vcs;
+        //一些UI提示，可以提供更友好的用户交互（也可以删掉）
+        [UWProgressHUD showLoadingWithMessage:NSLocalizedString(UWSettingMessage, nil)];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [UWProgressHUD dismiss];
+        });
+    });
+</code></pre>
+<p>整体下来，就可以实现在App内优雅的切换语言。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实在实践过程中，坑还是很多的，欢迎提问。</p>
+<p>下面附上个简单的<a href="https://github.com/DarkAngel7/Demos-LanguageSettingsDemo/" target="_blank" rel="external">Demo</a>，是上面说的简化版本，大家有需要可以下载看下。里面有小福利哦，慢慢找吧~</p>
+<p>最后，<a href="https://itunes.apple.com/cn/app/you-ke-gong-chang/id1034170822?mt=8" target="_blank" rel="external">优客工场</a>欢迎您。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;随着公司业务的发展，App版本的迭代，相信不少App都需要英文化（国际化）。App英文化，不外乎这三点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;纯代码中
+    
+    </summary>
+    
+    
+      <category term="iOS技术分享" scheme="http://blog.darkangel7.com/tags/iOS%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Jenkins部署MacOS Slave实现持续集成(iOS)</title>
     <link href="http://blog.darkangel7.com/2017/04/28/Jenkins%E9%83%A8%E7%BD%B2MacOS%20Slave%E5%AE%9E%E7%8E%B0%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90(iOS)/"/>
     <id>http://blog.darkangel7.com/2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/</id>
     <published>2017-04-28T10:49:16.000Z</published>
-    <updated>2017-05-02T02:44:38.000Z</updated>
+    <updated>2017-05-04T04:30:05.000Z</updated>
     
     <content type="html"><![CDATA[<p>解决Linux服务器上的Jenkins无法构建Xcode工程</p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Linux服务器无法安装Xcode，所以Jenkins无法通过shell来调用xcodebuild、xcrun等命令来构建Xcode工程，因此无法持续集成，敏捷开发。下面介绍一种配置Jenkins节点的方式，来实现Linux上的Jenkins构建Xcode工程，并上传ipa到蒲公英pgyer来进行测试。</p>
@@ -111,6 +346,8 @@ https://www.pgyer.com/apiv1/app/upload
     </summary>
     
     
+      <category term="iOS技术分享" scheme="http://blog.darkangel7.com/tags/iOS%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
   </entry>
   
   <entry>
@@ -118,7 +355,7 @@ https://www.pgyer.com/apiv1/app/upload
     <link href="http://blog.darkangel7.com/2016/08/19/Hexo+Github%E7%9A%84Blog%E6%90%AD%E5%BB%BA/"/>
     <id>http://blog.darkangel7.com/2016/08/19/Hexo+Github的Blog搭建/</id>
     <published>2016-08-19T04:40:16.000Z</published>
-    <updated>2016-08-26T03:32:59.000Z</updated>
+    <updated>2017-05-04T05:52:10.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h1><h2 id="一、安装Homebrew"><a href="#一、安装Homebrew" class="headerlink" title="一、安装Homebrew"></a>一、安装Homebrew</h2><p>Mac上已经安装了ruby环境，只需要输入</p>
 <pre><code>ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
@@ -173,32 +410,56 @@ deploy:
 <p>然后在Blog目录下</p>
 <pre><code>hexo g -d
 </code></pre><p>生成静态文件并且部署出去，不出意外，已经可以外网访问了。</p>
-<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="一、访问速度"><a href="#一、访问速度" class="headerlink" title="一、访问速度"></a>一、访问速度</h2><p>由于Google被墙，大部分主题中引用的jquery都会因为超时（可以Blog目录下搜索google），而造成页面访问很慢，这里需要将jquery改为百度的</p>
+<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="一、访问速度"><a href="#一、访问速度" class="headerlink" title="一、访问速度"></a>一、访问速度</h2><p>由于Google被墙，大部分主题中引用的jquery都会因为超时（可以Blog目录下搜索google），而造成页面访问很慢，这里需要将jquery改为百度的<br>​    </p>
 <pre><code>&lt;script src=&quot;//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js&quot;&gt;&lt;/script&gt;
 </code></pre><h2 id="二、RSS订阅"><a href="#二、RSS订阅" class="headerlink" title="二、RSS订阅"></a>二、RSS订阅</h2><p>输入命令</p>
 <pre><code>$ npm install hexo-generator-feed --save
-</code></pre><p>然后在_config.yml中，添加    </p>
+</code></pre><p>然后在_config.yml中，添加<br>​    </p>
 <pre><code>rss: /atom.xml
 feed:
      type: atom
     path: atom.xml
      limit: 20
-</code></pre><h2 id="三、搜索支持"><a href="#三、搜索支持" class="headerlink" title="三、搜索支持"></a>三、搜索支持</h2><p>现在在百度和Google是搜不到你的网站的，为了让搜索引擎搜索到，需要添加sitemap.xml。首先输入：</p>
-<pre><code>npm install hexo-generator-sitemap --save
-npm install hexo-generator-baidu-sitemap --save
-</code></pre><p>然后在<code>_config.yml</code>文件中添加</p>
-<pre><code>sitemap:
-         path: sitemap.xml
-baidusitemap:
-         path: baidusitemap.xml
-</code></pre><p>当前最好还是自己到搜索引擎提交</p>
+</code></pre><h2 id="三、搜索支持"><a href="#三、搜索支持" class="headerlink" title="三、搜索支持"></a>三、搜索支持</h2><p>现在在百度和Google是搜不到你的网站的，为了让搜索引擎搜索到，需要做一些工作。</p>
+<p>搜索引擎入口</p>
 <ul>
 <li><a href="https://www.google.com/webmasters/tools/home?hl=zh-CN" target="_blank" rel="external">Google搜索引擎提交入口</a></li>
 <li><a href="http://www.baidu.com/search/url_submit.htm" target="_blank" rel="external">百度搜索引擎入口</a></li>
 </ul>
-<p>先验证网站所有权，下载html，mv到Blog/themes/yourtheme/source目录下，执行</p>
+<p>添加sitemap.xml：</p>
+<p>首先输入：</p>
+<pre><code>npm install hexo-generator-sitemap --save
+npm install hexo-generator-baidu-sitemap --save    
+npm install hexo-baidu-url-submit --save
+</code></pre><p>前两个插件用于生产sitemap，后一个插件用于主动推送链接到百度（<strong>防止百度爬虫抓取失败，导致百度搜不到您的博客</strong>）。</p>
+<p>然后在<code>_config.yml</code>文件中添加</p>
+<pre><code>sitemap:
+         path: sitemap.xml
+baidusitemap:
+         path: baidusitemap.xml
+
+## BaiduUrlSubmit: http://hui-wang.info/2016/10/23/Hexo插件之百度主动提交链接/    
+baidu_url_submit:        ##主动推送新文章到百度
+  count: 3 ## 比如3，代表提交最新的三个链接
+  host: blog.darkangel7.com ## 在百度站长平台中注册的域名
+  token: your_token ## 请注意这是您的秘钥， 请不要发布在公众仓库里!
+  path: baidu_urls.txt ## 文本文档的地址， 新链接会保存在此文本文档里
+
+##同时要检查这里有没有URL值，必须包含是百度站长平台注册的域名，比如 
+# URL
+url: http://blog.darkangel7.com
+root: /
+permalink: :year/:month/:day/:title/
+
+##最后，加入新的deployer，如
+deploy:
+- type: git
+  repository: git@github.com:DarkAngel7/Blog-Hexo.git
+- type: baidu_url_submitter  ## 百度链接主动推送
+</code></pre><p>先验证网站所有权，下载html，mv到Blog/themes/yourtheme/source目录下，执行</p>
 <pre><code>hexo g -d
 </code></pre><p>验证成功后，添加百度自动推送脚本，最好在<code>head.ejs</code>中添加百度自动推送的代码，至于<code>head.ejs</code>文件位置，在你使用的theme文件夹下搜索吧。<br>谷歌的话，在<code>抓取</code>-<code>站点地图</code>里面添加就好。</p>
+<p>这样主动推送与自动推送结合，能很好的提高您文章的曝光率。    </p>
 <h2 id="四、评论功能"><a href="#四、评论功能" class="headerlink" title="四、评论功能"></a>四、评论功能</h2><p>可以使用<a href="http://duoshuo.com" target="_blank" rel="external">多说</a>来提供评论功能。首先，在<code>_config.yml</code>文件中添加</p>
 <pre><code># Duoshuo
 duoshuo_shortname: yoursite.doushuo.com
