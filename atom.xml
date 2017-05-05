@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-04T11:10:56.000Z</updated>
+  <updated>2017-05-05T09:24:15.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -16,11 +16,152 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>iOS中NSUserDefaults的黑科技</title>
+    <link href="http://blog.darkangel7.com/2017/05/05/iOS%E4%B8%ADNSUserDefaults%E7%9A%84%E9%BB%91%E7%A7%91%E6%8A%80/"/>
+    <id>http://blog.darkangel7.com/2017/05/05/iOS中NSUserDefaults的黑科技/</id>
+    <published>2017-05-05T04:18:12.000Z</published>
+    <updated>2017-05-05T09:24:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在iOS开发中，我们时常需要保存一些数据，或者希望在用户下次打开App时，依然可以保留一些设置等，比如<strong>主题设置</strong>、<strong>语言设置</strong>，那么我们一般会选择使用<code>NSUserDefaults</code>作为轻量级数据持久化方案。这里不对其他的数据持久化方案（如Plist、归档、Sqlite3、CoreData等）进行探讨，主要来介绍一下<code>NSUserDefaults</code>中的一些黑科技。</p>
+<h1 id="NSUserDefaults简介"><a href="#NSUserDefaults简介" class="headerlink" title="NSUserDefaults简介"></a>NSUserDefaults简介</h1><p><code>NSUserDefaults</code>在Foundation框架中被定义，用来存储和读取一些轻量级数据。其本质是操作plist文件。</p>
+<p>它比其他数据持久化方案的优点在于：</p>
+<ul>
+<li>轻量级。</li>
+<li>方便快捷直接使用。</li>
+<li>支持<code>NSData</code>, <code>NSString</code>, <code>NSNumber</code>, <code>NSDate</code>, <code>NSArray</code> and  <code>NSDictionary</code>。</li>
+</ul>
+<p>缺点在于：</p>
+<ul>
+<li>不适合大量数据。</li>
+<li>无法存储自定义<code>model</code>。</li>
+</ul>
+<h1 id="黑科技"><a href="#黑科技" class="headerlink" title="黑科技"></a>黑科技</h1><p>一些<code>NSUserDefaults</code>最基础的用法，这里就不赘述了。说到黑科技，一般指的是鲜为人知而又十分厉害的技术。这里主要介绍两个黑科技。</p>
+<h2 id="还原默认值"><a href="#还原默认值" class="headerlink" title="还原默认值"></a>还原默认值</h2><p>一般<code>NSUserDefaults</code>使用，都会保存一些自定义的Key和Value，其实这个不涉及还原默认值的问题。其实有些时候，是需要修改其中的系统默认值的。比如应用内切换中英文，就需要修改<code>AppleLanguages</code>的value。既然修改了系统默认值，怎么还原默认值呢？</p>
+<p>我们先来看一下修改前的：</p>
+<pre><code>po [NSUserDefaults standardUserDefaults].dictionaryRepresentation
+
+{
+    ...
+    AppleLanguages =     (
+        en,
+        &quot;zh-Hans-US&quot;
+    );
+    AppleLocale = &quot;en_US&quot;;
+    ...
+}
+</code></pre><p>可以看到<code>AppleLanguages</code>对应的是一个数组，如果我们在App内想切换成中文，执行</p>
+<pre><code class="objective-c">[[NSUserDefaults standardUserDefaults] setObject:@[@&quot;zh-Hans&quot;] forKey:@&quot;AppleLanguages&quot;];
+</code></pre>
+<p>再次看下修改后</p>
+<pre><code>po [NSUserDefaults standardUserDefaults].dictionaryRepresentation
+
+{
+    ...
+    AppleLanguages =     (
+        zh-Hans
+    );
+    AppleLocale = &quot;en_US&quot;;
+    ...
+}
+</code></pre><p>好吧，这个<code>AppleLanguages</code>字段的值已经被记录了。这时候，kill客户端，重新打开客户端，发现，这个值肯定不会变。那么如果这个时候用户在系统设置中切换到了日语，那么我想在客户端中通过<strong>跟随手机系统</strong>的设置，还原到日语，该怎么办呢？</p>
+<p>或许你会想到记录初始值，只要提前记录，在还原时再set回去就可以了。嗯~没毛病，可是在什么地方什么时候记录初始值呢？这个<code>AppleLanguages</code>字段其实就是系统的语言默认值，你已经把它改过了，如果在你改过之后用户又修改了系统语言，那你是拿不到新默认值的，所以这条路是走不通的。</p>
+<p>那怎么实现还原默认值呢？看下这个方法：</p>
+<pre><code>/*!
+ -setObject:forKey: immediately stores a value (or removes the value if nil is passed as the value) for the provided key in the search list entry for the receiver&#39;s suite name in the current user and any host, then asynchronously stores the value persistently, where it is made available to other processes.
+ */
+- (void)setObject:(nullable id)value forKey:(NSString *)defaultName;
+</code></pre><p>这个方法Document中并没有描述过多，基本都是在强调<code>value</code>必须是<code>NSData</code>, <code>NSString</code>, <code>NSNumber</code>, <code>NSDate</code>, <code>NSArray</code> and  <code>NSDictionary</code>中的一种，且<code>NSArray</code> and  <code>NSDictionary</code>中的值也必须是Plist支持的类型。在注释中有强调，<code>removes the value if nil is passed as the value</code>，传nil等同于删除这个键值对。</p>
+<pre><code>/// -removeObjectForKey: is equivalent to -[... setObject:nil forKey:defaultName]
+- (void)removeObjectForKey:(NSString *)defaultName;
+</code></pre><p>其实这里才是关键</p>
+<pre><code>[[NSUserDefaults standardUserDefaults] setObject:nil forKey:@&quot;AppleLanguages&quot;];
+//or
+[[NSUserDefaults standardUserDefaults] removeObjectForKey:@&quot;AppleLanguages&quot;];
+</code></pre><p>然后再次</p>
+<pre><code>po [NSUserDefaults standardUserDefaults].dictionaryRepresentation
+
+{
+    ...
+    AppleLanguages =     (
+        en,
+        &quot;zh-Hans-US&quot;
+    );
+    AppleLocale = &quot;en_US&quot;;
+    ...
+}
+</code></pre><p>你会发现，WTF，居然这个字段还存在，且还原成了默认值，厉害了word哥。本方法是本人历经各种坑之后发现的，且官方文档中没有任何提及，只能说Apple爸爸任性。</p>
+<h2 id="巧用SuiteName"><a href="#巧用SuiteName" class="headerlink" title="巧用SuiteName"></a>巧用SuiteName</h2><pre><code>- (nullable instancetype)initWithSuiteName:(nullable NSString *)suitename NS_AVAILABLE(10_9, 7_0) NS_DESIGNATED_INITIALIZER;
+</code></pre><p>这个方法，想必各位不会陌生，在跨App间通信或者主App与Extension共享数据，都会用到，一般配合使用的是<strong>App Groups</strong>。</p>
+<h3 id="App-Groups数据共享"><a href="#App-Groups数据共享" class="headerlink" title="App Groups数据共享"></a>App Groups数据共享</h3><p>在App Groups中使用，一般两个App都需要加入同一个Group。<img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffajfof2qdj30x00cqjsl.jpg" alt="">然后在两个App分别使用</p>
+<pre><code class="objective-c">- (NSUserDefaults *)userDefaults
+{
+    return [[NSUserDefaults alloc] initWithSuiteName:@&quot;group.urwork.autosignin&quot;];    //name需要是Group的id
+}
+</code></pre>
+<p>来存储和读取数据，即可实现数据共享。</p>
+<h3 id="超微型简单方便易用数据库"><a href="#超微型简单方便易用数据库" class="headerlink" title="超微型简单方便易用数据库"></a>超微型简单方便易用数据库</h3><p>这里，其实主要介绍一下<code>initWithSuiteName:</code>的另一个用途，我称之为<strong>超微型简单方便易用数据库</strong>。</p>
+<p><strong>需求</strong>：后台同学最近太忙（😳这不是理由），需要客户端同学临时开发一个本地的浏览历史功能。简单的说就是在客户端本地保存每个用户浏览的文章记录。</p>
+<p><strong>吐糟</strong>：好吧，时间紧，任务重，功能先上线，后续再优化已经是一个习惯了😳。</p>
+<p><strong>实现方案</strong>：简单，本地存个字典（或者Plist文件），每个key是一个用户id，value是一个数组，数组里的每个元素是一个字典，这个字典里有<code>articleId</code>、<code>title</code>、<code>imgUrl</code>、<code>...</code>。结构大概是这样：</p>
+<pre><code>{
+  &quot;10086&quot; : [
+    {
+      &quot;articleId&quot; : 1,
+      &quot;imgUrl&quot; : &quot;https://img.xxx.com/abcdefg.png&quot;,
+      &quot;title&quot; : &quot;中国历史&quot;,
+      ...
+    },
+    {
+      &quot;articleId&quot; : 2,
+      &quot;imgUrl&quot; : &quot;https://img.xxx.com/abcdefg.png&quot;,
+      &quot;title&quot; : &quot;中国教育&quot;,
+      ...
+    },
+    ...
+  ],
+  &quot;10087&quot; : [
+    {
+      &quot;articleId&quot; : 2,
+      &quot;imgUrl&quot; : &quot;https://img.xxx.com/abcdefg.png&quot;,
+      &quot;title&quot; : &quot;中国教育&quot;,
+      ...
+    },
+    ...
+  ]
+}
+</code></pre><p>看起来OK，但是小伙伴们，性能问题还是要考虑的。我想获取某个用户的浏览历史，需要把文件整体读到内存中，然后用<code>dict[@&quot;10086&quot;]</code>的方法，得到这个用户的浏览历史<code>Array</code>，用户少还好，多了，每次读取的IO操作会很耗时，对性能有影响。</p>
+<p>可能你会说用数据库啊什么的，当然可以，但是又是需要依赖一堆第三方，还要写好多代码，创建好多类。我就是想简单实现一下，有没有更好的方法呢？当然有，<strong>超微型简单方便易用数据库</strong>。</p>
+<p>每个用户都可以用一个<code>NSUserDefaults</code>来代替，每个用户的浏览历史，可以直接用<code>setObject:forKey:</code>的方式来存储，如：</p>
+<pre><code class="objective-c">//这个跟App Groups没有关系
+//已有则读取，没有则创建
+NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@&quot;10086&quot;];
+//存储
+[userDefaults setObject:history forKey:@&quot;ArticleBrowsingHistory&quot;];
+//读取
+NSArray *history = [userDefaults objectForKey:@&quot;ArticleBrowsingHistory&quot;];
+</code></pre>
+<p>所有用户相对独立，每个用户是一个plist文件，在沙盒目录<code>/Library/Preferences/</code>中，<img src="http://ww2.sinaimg.cn/large/006tNbRwly1ffalfnmhudj30z007kab7.jpg" alt="">想删除也很容易，直接删除这个文件即可。</p>
+<p>其实这个<strong>超微型简单方便易用数据库</strong>还可以实现好多功能，看你怎么操作了。如果你的App没有后台，不同用户的主题设置、语言设置可能不同，都可以通过这个来存储。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实很多我们很常用的东西都有很多我们未发掘出的用途，生活也是同样，学会发现，一切会更美好。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;在iOS开发中，我们时常需要保存一些数据，或者希望在用户下次打开App时，依然可以保留一些设置等，比如&lt;strong&gt;主题设置&lt;/stron
+    
+    </summary>
+    
+    
+      <category term="iOS技术分享" scheme="http://blog.darkangel7.com/tags/iOS%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+  </entry>
+  
+  <entry>
     <title>在iOS App内优雅的动态切换语言</title>
     <link href="http://blog.darkangel7.com/2017/05/04/%E5%9C%A8iOSApp%E5%86%85%E4%BC%98%E9%9B%85%E7%9A%84%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2%E8%AF%AD%E8%A8%80/"/>
     <id>http://blog.darkangel7.com/2017/05/04/在iOSApp内优雅的动态切换语言/</id>
     <published>2017-05-04T03:46:56.000Z</published>
-    <updated>2017-05-04T11:10:56.000Z</updated>
+    <updated>2017-05-05T06:53:42.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>随着公司业务的发展，App版本的迭代，相信不少App都需要英文化（国际化）。App英文化，不外乎这三点：</p>
 <ol>
@@ -28,7 +169,7 @@
 <li>Storyboard/Xib国际化；</li>
 <li>Info.plist国际化。</li>
 </ol>
-<p>具体这三种分别如何操作，怎么国际化，这里不再赘述。一般App做了国际化，那么在用户切换手机系统Settings里的Language时，App就会切换成对应的语言（前提是做个该语言国际化）。那么如果想实现<strong>微博</strong>和<strong>微信</strong>等App，在App内部实现切换语言，应该怎么做呢？如何做，才能更加优雅的动态切换语言呢？</p>
+<p>具体这三种分别如何操作，怎么国际化，这里不再赘述。一般App做了国际化，那么在用户切换手机系统Settings里的Language时，App就会切换成对应的语言（前提是做过该语言国际化）。那么如果想实现<strong>微博</strong>和<strong>微信</strong>等App，在App内部实现切换语言，应该怎么做呢？如何做，才能更加优雅的动态切换语言呢？</p>
 <p>下面，讲一讲如何在iOS App内优雅的动态切换语言。</p>
 <h1 id="调研"><a href="#调研" class="headerlink" title="调研"></a>调研</h1><p>如果有相关需求，一般成熟的App都会怎么做呢？这里我们来看一下<strong>微博</strong>和<strong>微信</strong>。</p>
 <p><strong>微博</strong>：</p>
@@ -49,21 +190,21 @@
 <pre><code class="objective-c">#define NSLocalizedString(key, comment) \
         [NSBundle.mainBundle localizedStringForKey:(key) value:@&quot;&quot; table:nil]
 </code></pre>
-<p>那么为何，系统切换语言的时候，此方法返回的就是对应语言（前提做了该语言的国际化）的字符串呢？原因在是哪个<code>Object</code>调用了这个方法，一般默认的都是<code>NSBundle.mainBundle</code>这个对象。系统语言是en，<code>NSBundle.mainBundle</code>就是</p>
-<pre><code>po [NSBundle mainBundle]
+<p>那么为何，系统切换语言的时候，此方法返回的就是对应语言（前提做了该语言的国际化）的字符串呢？原因在是哪个<code>bundle</code>调用了这个方法，一般默认的都是<code>NSBundle.mainBundle</code>这个对象。</p>
+<pre><code> po [NSBundle allBundles]
 
-NSBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/016AC9F4-91F5-41A7-A054-81621955D472/URWorkClient.app/en.lproj&gt;
-</code></pre><p>而是默认中文语言时，</p>
-<pre><code>po [NSBundle mainBundle]
-
-UWBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/016AC9F4-91F5-41A7-A054-81621955D472/URWorkClient.app&gt; (loaded)
-</code></pre><p>所以，切换语言，其实切换了<code>bundle</code>对象，所以不同语言的<code>bundle</code>对象，就会根据<code>key</code>返回不同的<code>localizedString</code>。</p>
+&lt;__NSArrayI 0x608000052f60&gt;(
+NSBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/B391ED77-F57B-4B5E-9E53-CFD1245583D8/LanguageSettingsDemo.app/en.lproj&gt; (not yet loaded),
+NSBundle &lt;/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Artwork.bundle&gt; (not yet loaded),
+DABundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/B391ED77-F57B-4B5E-9E53-CFD1245583D8/LanguageSettingsDemo.app&gt; (loaded)
+)
+</code></pre><p>可以看到有默认加载的bundle，还有个没加载的en bundle。所以，切换语言，其实只要切换了<code>bundle</code>对象，就可以让这个<code>bundle</code>根据<code>key</code>返回不同的<code>localizedString</code>。</p>
 <h3 id="NSUserDefaults"><a href="#NSUserDefaults" class="headerlink" title="NSUserDefaults"></a>NSUserDefaults</h3><p>其实语言设置，只要修改<code>AppleLanguages</code>对应的值就好了。这样才能加载正确语言的<code>Storyboard/Xib</code>，以及一些<code>resources</code>(图片之类的)。</p>
 <h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>方案其实很简单，每次切换语言，把用户选择的语言保存在本地，同时更改<code>bundle</code>对象，然后刷新页面就可以了。</p>
 <p><img src="http://ww2.sinaimg.cn/large/006tKfTcly1ff9ji4gz3kg306y0cce09.gif" alt=""></p>
 <h2 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h2><h3 id="保存用户设置"><a href="#保存用户设置" class="headerlink" title="保存用户设置"></a>保存用户设置</h3><p>很简单，保存在<code>NSUserDefaults</code>里。</p>
 <p>这里需要说明的是<strong>跟随手机系统</strong>，即清除用户自定义设置，只需要将<code>AppleLanguages</code>字段设为<code>nil</code>即可。</p>
-<p>但是当<code>AppleLanguages</code>字段设为nil，你再去获取它的值时，会发现他已经变成了系统语言的默认值。</p>
+<p>但是当<code>AppleLanguages</code>字段设为nil，你再去获取它的值时，会发现他已经变成了系统语言的默认值。这里可以参考<a href="">这篇文章</a>。</p>
 <p>.h</p>
 <pre><code class="objective-c">/**
  设置类

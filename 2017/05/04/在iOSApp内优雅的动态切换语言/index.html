@@ -77,7 +77,7 @@
 <li>Storyboard/Xib国际化；</li>
 <li>Info.plist国际化。</li>
 </ol>
-<p>具体这三种分别如何操作，怎么国际化，这里不再赘述。一般App做了国际化，那么在用户切换手机系统Settings里的Language时，App就会切换成对应的语言（前提是做个该语言国际化）。那么如果想实现<strong>微博</strong>和<strong>微信</strong>等App，在App内部实现切换语言，应该怎么做呢？如何做，才能更加优雅的动态切换语言呢？</p>
+<p>具体这三种分别如何操作，怎么国际化，这里不再赘述。一般App做了国际化，那么在用户切换手机系统Settings里的Language时，App就会切换成对应的语言（前提是做过该语言国际化）。那么如果想实现<strong>微博</strong>和<strong>微信</strong>等App，在App内部实现切换语言，应该怎么做呢？如何做，才能更加优雅的动态切换语言呢？</p>
 <p>下面，讲一讲如何在iOS App内优雅的动态切换语言。</p>
 <h1 id="调研"><a href="#调研" class="headerlink" title="调研"></a>调研</h1><p>如果有相关需求，一般成熟的App都会怎么做呢？这里我们来看一下<strong>微博</strong>和<strong>微信</strong>。</p>
 <p><strong>微博</strong>：</p>
@@ -98,21 +98,21 @@
 <pre><code class="objective-c">#define NSLocalizedString(key, comment) \
         [NSBundle.mainBundle localizedStringForKey:(key) value:@&quot;&quot; table:nil]
 </code></pre>
-<p>那么为何，系统切换语言的时候，此方法返回的就是对应语言（前提做了该语言的国际化）的字符串呢？原因在是哪个<code>Object</code>调用了这个方法，一般默认的都是<code>NSBundle.mainBundle</code>这个对象。系统语言是en，<code>NSBundle.mainBundle</code>就是</p>
-<pre><code>po [NSBundle mainBundle]
+<p>那么为何，系统切换语言的时候，此方法返回的就是对应语言（前提做了该语言的国际化）的字符串呢？原因在是哪个<code>bundle</code>调用了这个方法，一般默认的都是<code>NSBundle.mainBundle</code>这个对象。</p>
+<pre><code> po [NSBundle allBundles]
 
-NSBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/016AC9F4-91F5-41A7-A054-81621955D472/URWorkClient.app/en.lproj&gt;
-</code></pre><p>而是默认中文语言时，</p>
-<pre><code>po [NSBundle mainBundle]
-
-UWBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/016AC9F4-91F5-41A7-A054-81621955D472/URWorkClient.app&gt; (loaded)
-</code></pre><p>所以，切换语言，其实切换了<code>bundle</code>对象，所以不同语言的<code>bundle</code>对象，就会根据<code>key</code>返回不同的<code>localizedString</code>。</p>
+&lt;__NSArrayI 0x608000052f60&gt;(
+NSBundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/B391ED77-F57B-4B5E-9E53-CFD1245583D8/LanguageSettingsDemo.app/en.lproj&gt; (not yet loaded),
+NSBundle &lt;/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Artwork.bundle&gt; (not yet loaded),
+DABundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E4A6-4EC2-AB99-E04304331C3A/data/Containers/Bundle/Application/B391ED77-F57B-4B5E-9E53-CFD1245583D8/LanguageSettingsDemo.app&gt; (loaded)
+)
+</code></pre><p>可以看到有默认加载的bundle，还有个没加载的en bundle。所以，切换语言，其实只要切换了<code>bundle</code>对象，就可以让这个<code>bundle</code>根据<code>key</code>返回不同的<code>localizedString</code>。</p>
 <h3 id="NSUserDefaults"><a href="#NSUserDefaults" class="headerlink" title="NSUserDefaults"></a>NSUserDefaults</h3><p>其实语言设置，只要修改<code>AppleLanguages</code>对应的值就好了。这样才能加载正确语言的<code>Storyboard/Xib</code>，以及一些<code>resources</code>(图片之类的)。</p>
 <h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>方案其实很简单，每次切换语言，把用户选择的语言保存在本地，同时更改<code>bundle</code>对象，然后刷新页面就可以了。</p>
 <p><img src="http://ww2.sinaimg.cn/large/006tKfTcly1ff9ji4gz3kg306y0cce09.gif" alt=""></p>
 <h2 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h2><h3 id="保存用户设置"><a href="#保存用户设置" class="headerlink" title="保存用户设置"></a>保存用户设置</h3><p>很简单，保存在<code>NSUserDefaults</code>里。</p>
 <p>这里需要说明的是<strong>跟随手机系统</strong>，即清除用户自定义设置，只需要将<code>AppleLanguages</code>字段设为<code>nil</code>即可。</p>
-<p>但是当<code>AppleLanguages</code>字段设为nil，你再去获取它的值时，会发现他已经变成了系统语言的默认值。</p>
+<p>但是当<code>AppleLanguages</code>字段设为nil，你再去获取它的值时，会发现他已经变成了系统语言的默认值。这里可以参考<a href="">这篇文章</a>。</p>
 <p>.h</p>
 <pre><code class="objective-c">/**
  设置类
@@ -296,6 +296,10 @@ static NSString *const UWUserLanguageKey = @&quot;UWUserLanguageKey&quot;;
     </footer>
   </article>
   <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2017/05/05/iOS中NSUserDefaults的黑科技/">
+        ← iOS中NSUserDefaults的黑科技
+    </a>
     
     <span class="icon-logo">•</span>
     

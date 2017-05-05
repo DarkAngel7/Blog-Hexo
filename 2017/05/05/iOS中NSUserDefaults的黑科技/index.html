@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS中NSUserDefaults的黑科技 | Dark Angel</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/8.5/styles/github.min.css">
+  <meta name="generator" content="Dark Angel">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="site-head"  style="background: #24282b url(/img/img-bg.jpg) center; background-size: cover" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="/img/avatar.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">Dark Angel</h1>
+            <h2 class="blog-description"><button id="showMenu">Show Menu</button></h2>
+        </div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-05-05T04:18:12.000Z" itemprop="datePublished">
+          2017-05-05
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS技术分享/'>iOS技术分享</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS中NSUserDefaults的黑科技</h1>
+    <span id="busuanzi_value_page_pv"></span>次阅读
+    <span class="ds-thread-count" data-thread-key="2017/05/05/iOS中NSUserDefaults的黑科技/"></span>
+    <section class="post-content">
+     	
+              <div id="toc" class="toc-article">
+                <strong class="toc-title">本文目录</strong>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NSUserDefaults简介"><span class="toc-text">NSUserDefaults简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#黑科技"><span class="toc-text">黑科技</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#还原默认值"><span class="toc-text">还原默认值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#巧用SuiteName"><span class="toc-text">巧用SuiteName</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#App-Groups数据共享"><span class="toc-text">App Groups数据共享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#超微型简单方便易用数据库"><span class="toc-text">超微型简单方便易用数据库</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+              </div>
+            
+	 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在iOS开发中，我们时常需要保存一些数据，或者希望在用户下次打开App时，依然可以保留一些设置等，比如<strong>主题设置</strong>、<strong>语言设置</strong>，那么我们一般会选择使用<code>NSUserDefaults</code>作为轻量级数据持久化方案。这里不对其他的数据持久化方案（如Plist、归档、Sqlite3、CoreData等）进行探讨，主要来介绍一下<code>NSUserDefaults</code>中的一些黑科技。</p>
+<h1 id="NSUserDefaults简介"><a href="#NSUserDefaults简介" class="headerlink" title="NSUserDefaults简介"></a>NSUserDefaults简介</h1><p><code>NSUserDefaults</code>在Foundation框架中被定义，用来存储和读取一些轻量级数据。其本质是操作plist文件。</p>
+<p>它比其他数据持久化方案的优点在于：</p>
+<ul>
+<li>轻量级。</li>
+<li>方便快捷直接使用。</li>
+<li>支持<code>NSData</code>, <code>NSString</code>, <code>NSNumber</code>, <code>NSDate</code>, <code>NSArray</code> and  <code>NSDictionary</code>。</li>
+</ul>
+<p>缺点在于：</p>
+<ul>
+<li>不适合大量数据。</li>
+<li>无法存储自定义<code>model</code>。</li>
+</ul>
+<h1 id="黑科技"><a href="#黑科技" class="headerlink" title="黑科技"></a>黑科技</h1><p>一些<code>NSUserDefaults</code>最基础的用法，这里就不赘述了。说到黑科技，一般指的是鲜为人知而又十分厉害的技术。这里主要介绍两个黑科技。</p>
+<h2 id="还原默认值"><a href="#还原默认值" class="headerlink" title="还原默认值"></a>还原默认值</h2><p>一般<code>NSUserDefaults</code>使用，都会保存一些自定义的Key和Value，其实这个不涉及还原默认值的问题。其实有些时候，是需要修改其中的系统默认值的。比如应用内切换中英文，就需要修改<code>AppleLanguages</code>的value。既然修改了系统默认值，怎么还原默认值呢？</p>
+<p>我们先来看一下修改前的：</p>
+<pre><code>po [NSUserDefaults standardUserDefaults].dictionaryRepresentation
+
+{
+    ...
+    AppleLanguages =     (
+        en,
+        &quot;zh-Hans-US&quot;
+    );
+    AppleLocale = &quot;en_US&quot;;
+    ...
+}
+</code></pre><p>可以看到<code>AppleLanguages</code>对应的是一个数组，如果我们在App内想切换成中文，执行</p>
+<pre><code class="objective-c">[[NSUserDefaults standardUserDefaults] setObject:@[@&quot;zh-Hans&quot;] forKey:@&quot;AppleLanguages&quot;];
+</code></pre>
+<p>再次看下修改后</p>
+<pre><code>po [NSUserDefaults standardUserDefaults].dictionaryRepresentation
+
+{
+    ...
+    AppleLanguages =     (
+        zh-Hans
+    );
+    AppleLocale = &quot;en_US&quot;;
+    ...
+}
+</code></pre><p>好吧，这个<code>AppleLanguages</code>字段的值已经被记录了。这时候，kill客户端，重新打开客户端，发现，这个值肯定不会变。那么如果这个时候用户在系统设置中切换到了日语，那么我想在客户端中通过<strong>跟随手机系统</strong>的设置，还原到日语，该怎么办呢？</p>
+<p>或许你会想到记录初始值，只要提前记录，在还原时再set回去就可以了。嗯~没毛病，可是在什么地方什么时候记录初始值呢？这个<code>AppleLanguages</code>字段其实就是系统的语言默认值，你已经把它改过了，如果在你改过之后用户又修改了系统语言，那你是拿不到新默认值的，所以这条路是走不通的。</p>
+<p>那怎么实现还原默认值呢？看下这个方法：</p>
+<pre><code>/*!
+ -setObject:forKey: immediately stores a value (or removes the value if nil is passed as the value) for the provided key in the search list entry for the receiver&#39;s suite name in the current user and any host, then asynchronously stores the value persistently, where it is made available to other processes.
+ */
+- (void)setObject:(nullable id)value forKey:(NSString *)defaultName;
+</code></pre><p>这个方法Document中并没有描述过多，基本都是在强调<code>value</code>必须是<code>NSData</code>, <code>NSString</code>, <code>NSNumber</code>, <code>NSDate</code>, <code>NSArray</code> and  <code>NSDictionary</code>中的一种，且<code>NSArray</code> and  <code>NSDictionary</code>中的值也必须是Plist支持的类型。在注释中有强调，<code>removes the value if nil is passed as the value</code>，传nil等同于删除这个键值对。</p>
+<pre><code>/// -removeObjectForKey: is equivalent to -[... setObject:nil forKey:defaultName]
+- (void)removeObjectForKey:(NSString *)defaultName;
+</code></pre><p>其实这里才是关键</p>
+<pre><code>[[NSUserDefaults standardUserDefaults] setObject:nil forKey:@&quot;AppleLanguages&quot;];
+//or
+[[NSUserDefaults standardUserDefaults] removeObjectForKey:@&quot;AppleLanguages&quot;];
+</code></pre><p>然后再次</p>
+<pre><code>po [NSUserDefaults standardUserDefaults].dictionaryRepresentation
+
+{
+    ...
+    AppleLanguages =     (
+        en,
+        &quot;zh-Hans-US&quot;
+    );
+    AppleLocale = &quot;en_US&quot;;
+    ...
+}
+</code></pre><p>你会发现，WTF，居然这个字段还存在，且还原成了默认值，厉害了word哥。本方法是本人历经各种坑之后发现的，且官方文档中没有任何提及，只能说Apple爸爸任性。</p>
+<h2 id="巧用SuiteName"><a href="#巧用SuiteName" class="headerlink" title="巧用SuiteName"></a>巧用SuiteName</h2><pre><code>- (nullable instancetype)initWithSuiteName:(nullable NSString *)suitename NS_AVAILABLE(10_9, 7_0) NS_DESIGNATED_INITIALIZER;
+</code></pre><p>这个方法，想必各位不会陌生，在跨App间通信或者主App与Extension共享数据，都会用到，一般配合使用的是<strong>App Groups</strong>。</p>
+<h3 id="App-Groups数据共享"><a href="#App-Groups数据共享" class="headerlink" title="App Groups数据共享"></a>App Groups数据共享</h3><p>在App Groups中使用，一般两个App都需要加入同一个Group。<img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffajfof2qdj30x00cqjsl.jpg" alt="">然后在两个App分别使用</p>
+<pre><code class="objective-c">- (NSUserDefaults *)userDefaults
+{
+    return [[NSUserDefaults alloc] initWithSuiteName:@&quot;group.urwork.autosignin&quot;];    //name需要是Group的id
+}
+</code></pre>
+<p>来存储和读取数据，即可实现数据共享。</p>
+<h3 id="超微型简单方便易用数据库"><a href="#超微型简单方便易用数据库" class="headerlink" title="超微型简单方便易用数据库"></a>超微型简单方便易用数据库</h3><p>这里，其实主要介绍一下<code>initWithSuiteName:</code>的另一个用途，我称之为<strong>超微型简单方便易用数据库</strong>。</p>
+<p><strong>需求</strong>：后台同学最近太忙（😳这不是理由），需要客户端同学临时开发一个本地的浏览历史功能。简单的说就是在客户端本地保存每个用户浏览的文章记录。</p>
+<p><strong>吐糟</strong>：好吧，时间紧，任务重，功能先上线，后续再优化已经是一个习惯了😳。</p>
+<p><strong>实现方案</strong>：简单，本地存个字典（或者Plist文件），每个key是一个用户id，value是一个数组，数组里的每个元素是一个字典，这个字典里有<code>articleId</code>、<code>title</code>、<code>imgUrl</code>、<code>...</code>。结构大概是这样：</p>
+<pre><code>{
+  &quot;10086&quot; : [
+    {
+      &quot;articleId&quot; : 1,
+      &quot;imgUrl&quot; : &quot;https://img.xxx.com/abcdefg.png&quot;,
+      &quot;title&quot; : &quot;中国历史&quot;,
+      ...
+    },
+    {
+      &quot;articleId&quot; : 2,
+      &quot;imgUrl&quot; : &quot;https://img.xxx.com/abcdefg.png&quot;,
+      &quot;title&quot; : &quot;中国教育&quot;,
+      ...
+    },
+    ...
+  ],
+  &quot;10087&quot; : [
+    {
+      &quot;articleId&quot; : 2,
+      &quot;imgUrl&quot; : &quot;https://img.xxx.com/abcdefg.png&quot;,
+      &quot;title&quot; : &quot;中国教育&quot;,
+      ...
+    },
+    ...
+  ]
+}
+</code></pre><p>看起来OK，但是小伙伴们，性能问题还是要考虑的。我想获取某个用户的浏览历史，需要把文件整体读到内存中，然后用<code>dict[@&quot;10086&quot;]</code>的方法，得到这个用户的浏览历史<code>Array</code>，用户少还好，多了，每次读取的IO操作会很耗时，对性能有影响。</p>
+<p>可能你会说用数据库啊什么的，当然可以，但是又是需要依赖一堆第三方，还要写好多代码，创建好多类。我就是想简单实现一下，有没有更好的方法呢？当然有，<strong>超微型简单方便易用数据库</strong>。</p>
+<p>每个用户都可以用一个<code>NSUserDefaults</code>来代替，每个用户的浏览历史，可以直接用<code>setObject:forKey:</code>的方式来存储，如：</p>
+<pre><code class="objective-c">//这个跟App Groups没有关系
+//已有则读取，没有则创建
+NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@&quot;10086&quot;];
+//存储
+[userDefaults setObject:history forKey:@&quot;ArticleBrowsingHistory&quot;];
+//读取
+NSArray *history = [userDefaults objectForKey:@&quot;ArticleBrowsingHistory&quot;];
+</code></pre>
+<p>所有用户相对独立，每个用户是一个plist文件，在沙盒目录<code>/Library/Preferences/</code>中，<img src="http://ww2.sinaimg.cn/large/006tNbRwly1ffalfnmhudj30z007kab7.jpg" alt="">想删除也很容易，直接删除这个文件即可。</p>
+<p>其实这个<strong>超微型简单方便易用数据库</strong>还可以实现好多功能，看你怎么操作了。如果你的App没有后台，不同用户的主题设置、语言设置可能不同，都可以通过这个来存储。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实很多我们很常用的东西都有很多我们未发掘出的用途，生活也是同样，学会发现，一切会更美好。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Dark Angel</h4>
+    <p>iOS界的低调探索者</p>
+</section>
+    <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2017/05/04/在iOSApp内优雅的动态切换语言/">
+        在iOS App内优雅的动态切换语言 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    
+    	<!-- 多说评论框 start -->
+　	<div class="ds-thread" data-thread-key="2017/05/05/iOS中NSUserDefaults的黑科技/" data-title="iOS中NSUserDefaults的黑科技" data-url="http://blog.darkangel7.com/2017/05/05/iOS中NSUserDefaults的黑科技/" data-auth-key="1"</div>	
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+		var duoshuoQuery = {short_name:"darkangel"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+		 	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">Subscribe!</span></a>
+  
+  <div class="inner">
+     <section class="copyright">原创文章，版权声明：署名-非商业性使用-相同方式共享 2.5</section>
+     <section class="copyright"><a href="/">Dark Angel</a> &copy; 2016 &bull; All Rights Reserved.</section>
+     <section class="poweredby">Powered By Hexo</section>
+  </div>
+</footer>
+
+      <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/8.5/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https'){
+   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-news"  href="/archives"><span>Archive</span></a>
+
+          <a class="icon-wiki"  href="https://github.com/DarkAngel7"><span>Github</span></a>
+
+          <a class="icon-Favorites"  href="/atom.xml"><span>Rss</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>
