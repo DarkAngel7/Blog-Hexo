@@ -112,7 +112,7 @@ DABundle &lt;/Users/DarkAngel/Library/Developer/CoreSimulator/Devices/CF831783-E
 <p><img src="http://ww2.sinaimg.cn/large/006tKfTcly1ff9ji4gz3kg306y0cce09.gif" alt=""></p>
 <h2 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h2><h3 id="保存用户设置"><a href="#保存用户设置" class="headerlink" title="保存用户设置"></a>保存用户设置</h3><p>很简单，保存在<code>NSUserDefaults</code>里。</p>
 <p>这里需要说明的是<strong>跟随手机系统</strong>，即清除用户自定义设置，只需要将<code>AppleLanguages</code>字段设为<code>nil</code>即可。</p>
-<p>但是当<code>AppleLanguages</code>字段设为nil，你再去获取它的值时，会发现他已经变成了系统语言的默认值。这里可以参考<a href="">这篇文章</a>。</p>
+<p>但是当<code>AppleLanguages</code>字段设为nil，你再去获取它的值时，会发现他已经变成了系统语言的默认值。这里可以参考<a href="http://blog.darkangel7.com/2017/05/05/iOS中NSUserDefaults的黑科技/">这篇文章</a>。</p>
 <p>.h</p>
 <pre><code class="objective-c">/**
  设置类
