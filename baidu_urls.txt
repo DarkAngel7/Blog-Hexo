@@ -1,1 +1,4 @@
 http://blog.darkangel7.com/2017/05/05/iOS中NSUserDefaults的黑科技/
+http://blog.darkangel7.com/2017/05/04/在iOSApp内优雅的动态切换语言/
+http://blog.darkangel7.com/2017/04/28/Jenkins部署MacOS Slave实现持续集成(iOS)/
+http://blog.darkangel7.com/2016/08/19/Hexo+Github的Blog搭建/
