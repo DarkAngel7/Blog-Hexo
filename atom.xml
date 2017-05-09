@@ -496,7 +496,7 @@ https://www.pgyer.com/apiv1/app/upload
     <link href="http://blog.darkangel7.com/2016/09/01/iOS%E4%B8%ADUIWebView%E4%B8%8EWKWebView%E3%80%81JavaScript%E4%B8%8EOC%E4%BA%A4%E4%BA%92%E3%80%81Cookie%E7%AE%A1%E7%90%86%E7%9C%8B%E6%88%91%E5%B0%B1%E5%A4%9F%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
     <id>http://blog.darkangel7.com/2016/09/01/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）/</id>
     <published>2016-09-01T07:37:29.000Z</published>
-    <updated>2017-05-09T10:46:10.000Z</updated>
+    <updated>2017-05-09T10:48:07.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>iOS开发中，用来显示一个html页、H5页，经常会用的一个控件是WebView。说到WebView，你知道多少呢？是简单的展示，还是要和OC交互实现比较复杂的功能呢？本文将为您介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。</p>
@@ -563,7 +563,7 @@ JSValue *value = [self.jsContext evaluateScript:@&quot;document.titlexxxx&quot;]
 </code></pre>
 <p>该方法，也很好的解决了<code>stringByEvaluatingJavaScriptFromString:</code>调用js方法后，出现错误却捕获不到的缺点。</p>
 <h3 id="UIWebView-JS调用OC"><a href="#UIWebView-JS调用OC" class="headerlink" title="UIWebView JS调用OC"></a>UIWebView JS调用OC</h3><h4 id="1-Custom-URL-Scheme（拦截URL）"><a href="#1-Custom-URL-Scheme（拦截URL）" class="headerlink" title="1. Custom URL Scheme（拦截URL）"></a>1. Custom URL Scheme（拦截URL）</h4><p>比如<code>darkangel://</code>。方法是在html或者js中，点击某个按钮触发事件时，跳转到自定义URL Scheme构成的链接，而Objective-C中捕获该链接，从中解析必要的参数，实现JS到OC的一次交互。比如页面中一个a标签，链接如下：</p>
-<pre><code class="objective-c">&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;
+<pre><code class="html">&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;
 </code></pre>
 <p>而在Objective-C中，只要遵循了<code>UIWebViewDelegate</code>协议，那么每次打开一个链接之前，都会触发方法</p>
 <pre><code class="objective-c">- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType；

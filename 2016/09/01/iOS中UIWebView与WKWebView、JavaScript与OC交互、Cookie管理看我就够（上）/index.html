@@ -136,7 +136,7 @@ JSValue *value = [self.jsContext evaluateScript:@&quot;document.titlexxxx&quot;]
 </code></pre>
 <p>该方法，也很好的解决了<code>stringByEvaluatingJavaScriptFromString:</code>调用js方法后，出现错误却捕获不到的缺点。</p>
 <h3 id="UIWebView-JS调用OC"><a href="#UIWebView-JS调用OC" class="headerlink" title="UIWebView JS调用OC"></a>UIWebView JS调用OC</h3><h4 id="1-Custom-URL-Scheme（拦截URL）"><a href="#1-Custom-URL-Scheme（拦截URL）" class="headerlink" title="1. Custom URL Scheme（拦截URL）"></a>1. Custom URL Scheme（拦截URL）</h4><p>比如<code>darkangel://</code>。方法是在html或者js中，点击某个按钮触发事件时，跳转到自定义URL Scheme构成的链接，而Objective-C中捕获该链接，从中解析必要的参数，实现JS到OC的一次交互。比如页面中一个a标签，链接如下：</p>
-<pre><code class="objective-c">&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;
+<pre><code class="html">&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;
 </code></pre>
 <p>而在Objective-C中，只要遵循了<code>UIWebViewDelegate</code>协议，那么每次打开一个链接之前，都会触发方法</p>
 <pre><code class="objective-c">- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType；
