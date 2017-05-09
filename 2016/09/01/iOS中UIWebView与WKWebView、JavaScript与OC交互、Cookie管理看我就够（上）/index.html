@@ -136,11 +136,13 @@ JSValue *value = [self.jsContext evaluateScript:@&quot;document.titlexxxx&quot;]
 </code></pre>
 <p>该方法，也很好的解决了<code>stringByEvaluatingJavaScriptFromString:</code>调用js方法后，出现错误却捕获不到的缺点。</p>
 <h3 id="UIWebView-JS调用OC"><a href="#UIWebView-JS调用OC" class="headerlink" title="UIWebView JS调用OC"></a>UIWebView JS调用OC</h3><h4 id="1-Custom-URL-Scheme（拦截URL）"><a href="#1-Custom-URL-Scheme（拦截URL）" class="headerlink" title="1. Custom URL Scheme（拦截URL）"></a>1. Custom URL Scheme（拦截URL）</h4><p>比如<code>darkangel://</code>。方法是在html或者js中，点击某个按钮触发事件时，跳转到自定义URL Scheme构成的链接，而Objective-C中捕获该链接，从中解析必要的参数，实现JS到OC的一次交互。比如页面中一个a标签，链接如下：</p>
-<pre><code>&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;
-</code></pre><p>而在Objective-C中，只要遵循了<code>UIWebViewDelegate</code>协议，那么每次打开一个链接之前，都会触发方法</p>
-<pre><code>- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType；
-</code></pre><p>在该方法中，捕获该链接，并且返回NO（<strong>阻止本次跳转</strong>），从而执行对应的OC方法。</p>
-<pre><code>- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+<pre><code class="objective-c">&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;
+</code></pre>
+<p>而在Objective-C中，只要遵循了<code>UIWebViewDelegate</code>协议，那么每次打开一个链接之前，都会触发方法</p>
+<pre><code class="objective-c">- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType；
+</code></pre>
+<p>在该方法中，捕获该链接，并且返回NO（<strong>阻止本次跳转</strong>），从而执行对应的OC方法。</p>
+<pre><code class="objective-c">- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     //标准的URL包含scheme、host、port、path、query、fragment等
     NSURL *URL = request.URL;    
@@ -152,7 +154,8 @@ JSValue *value = [self.jsContext evaluateScript:@&quot;document.titlexxxx&quot;]
     }
     return YES;
 }
-</code></pre><p>当用户点击<strong>短信验证登录</strong>时，控制台会输出<code>短信验证码登录，参数为 username=12323123&amp;code=892845</code>。参数可以是一个json格式并且URLEncode过的字符串，这样就可以实现复杂参数的传递（比如<a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavascriptBridge</a>）。</p>
+</code></pre>
+<p>当用户点击<strong>短信验证登录</strong>时，控制台会输出<code>短信验证码登录，参数为 username=12323123&amp;code=892845</code>。参数可以是一个json格式并且URLEncode过的字符串，这样就可以实现复杂参数的传递（比如<a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavascriptBridge</a>）。</p>
 <p><strong>优点</strong>：泛用性强，可以配合h5实现页面动态化。比如页面中一个活动链接到活动详情页，当native尚未开发完毕时，链接可以是一个h5链接，等到native开发完毕时，可以通过该方法跳转到native页面，实现页面动态化。且该方案适用于Android和iOS，泛用性很强。</p>
 <p><strong>缺点</strong>：无法直接获取本次交互的返回值，比较适合单向传参，且不关心回调的情景，比如h5页面跳转到native页面等。</p>
 <p>其实，<a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavascriptBridge</a>使用的方案就是<strong>拦截URL</strong>，为了解决无法直接获取返回值的缺点，它采用了将一个名为<code>callback</code>的<code>function</code>作为参数，通过一些封装，传递到OC（<strong>js-&gt;oc</strong> 传递参数和callbackId），然后在OC端执行完毕，再通过<code>block</code>来回调callback（<strong>oc-&gt;js</strong>，传递返回值参数），实现异步获取返回值，比如在js端调用</p>
