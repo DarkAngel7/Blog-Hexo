@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-05T09:24:15.000Z</updated>
+  <updated>2017-05-10T12:14:16.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -14,6 +14,557 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</title>
+    <link href="http://blog.darkangel7.com/2017/05/10/iOS%E4%B8%ADUIWebView%E4%B8%8EWKWebView%E3%80%81JavaScript%E4%B8%8EOC%E4%BA%A4%E4%BA%92%E3%80%81Cookie%E7%AE%A1%E7%90%86%E7%9C%8B%E6%88%91%E5%B0%B1%E5%A4%9F%EF%BC%88%E4%B8%AD%EF%BC%89/"/>
+    <id>http://blog.darkangel7.com/2017/05/10/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）/</id>
+    <published>2017-05-10T02:10:09.000Z</published>
+    <updated>2017-05-10T12:14:16.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>关于<code>UIWebView</code>的介绍，相信看过<a href="http://blog.darkangel7.com/2016/09/01/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）/">上文</a>的小伙伴们，已经大概清楚了吧，如果有问题，欢迎提问。</p>
+<p>本文是本系列文章的第二篇，主要为小伙伴们分享下<code>WKWebView</code>相关的内容：</p>
+<ul>
+<li><a href="http://blog.darkangel7.com/2016/09/01/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）/">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）</a></li>
+<li>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</li>
+<li><a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）</a>（待填坑…）</li>
+</ul>
+<p>关于文中提到的一些内容，这里我准备了个<a href="https://github.com/DarkAngel7/Demos-WebViewDemo" target="_blank" rel="external">Demo</a>，有需要的小伙伴可以下载。</p>
+<h1 id="WKWebView"><a href="#WKWebView" class="headerlink" title="WKWebView"></a>WKWebView</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>WKWebView</code>是Apple于iOS 8.0推出的<code>WebKit</code>中的核心控件，用来替代<code>UIWebView</code>。<code>WKWebView</code>比<code>UIWebView</code>的优势在于：</p>
+<ul>
+<li><p>更多的支持HTML5的特性</p>
+</li>
+<li><p>高达60fps的滚动刷新率以及内置手势</p>
+</li>
+<li>与Safari相同的JavaScript引擎</li>
+<li>将UIWebViewDelegate与UIWebView拆分成了14类与3个协议（<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/WebKit/ObjC_classic/index.html" target="_blank" rel="external">官方文档说明</a>）</li>
+<li>可以获取加载进度：<code>estimatedProgress</code>（UIWebView需要调用私有Api）</li>
+</ul>
+<p>作者本人在项目中使用<code>WKWebView</code>也1年多了，确确实实感受到了它的优势，但是同样也感受到了它带来的一些坑。下面来具体的介绍下<code>WKWebView</code>。其实Apple开源了<a href="https://opensource.apple.com/source/WebKit2/" target="_blank" rel="external">WebKit</a>，有兴趣的小伙伴可以研究下它的实现。</p>
+<h2 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h2><h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><p><code>WKWebView</code>的创建方法有这两种</p>
+<pre><code class="objective-c">/*-initWithFrame: to initialize an instance with the default configuration. 如果使用initWithFrame方法将使用默认的configuration
+The initializer copies the specified configuration, so mutating the configuration after invoking the initializer has no effect on the web view. 我们需要先设置configuration，再调用init，在init之后修改configuration则无效
+*/
+- (instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;
+</code></pre>
+<p>仔细看第一个方法，比<code>UIWebView</code>多了个<code>configuration</code>，这个配置可以设置很多东西。具体查看<code>WKWebViewConfiguration.h</code>，可以配置js是否支持，画中画是否开启等，这里主要讲两个比较常用的属性。</p>
+<p>第一个属性是<code>websiteDataStore</code>。</p>
+<pre><code class="objective-c">/*! @abstract The website data store to be used by the web view.
+ */
+@property (nonatomic, strong) WKWebsiteDataStore *websiteDataStore API_AVAILABLE(macosx(10.11), ios(9.0));
+</code></pre>
+<p>业界普遍认为 <code>WKWebView</code> 拥有自己的私有存储，它的一些缓存等数据都存在<code>websiteDataStore</code>中，具体增删改查就可以通过<code>WKWebsiteDataStore.h</code>中提供的方法，这里不多说，一般用的时候比较少，真的要清除缓存，简单粗暴的方法是删除沙盒目录中的Cache文件夹。</p>
+<p>第二个属性是<code>userContentController</code>。</p>
+<pre><code class="objective-c">/*! @abstract The user content controller to associate with the web view.
+*/
+@property (nonatomic, strong) WKUserContentController *userContentController;
+</code></pre>
+<p>这个属性很重要，后面讲的js-&gt;oc的交互，以及注入js代码都会用到它。查看<code>WKUserContentController</code>的头文件，你会发现它有如下几个方法：</p>
+<pre><code class="objective-c">@interface WKUserContentController : NSObject &lt;NSCoding&gt;
+//读取添加过的脚本
+@property (nonatomic, readonly, copy) NSArray&lt;WKUserScript *&gt; *userScripts;
+//添加脚本
+- (void)addUserScript:(WKUserScript *)userScript;
+//删除所有添加的脚本
+- (void)removeAllUserScripts;
+//通过window.webkit.messageHandlers.&lt;name&gt;.postMessage(&lt;messageBody&gt;) 来实现js-&gt;oc传递消息，并添加handler
+- (void)addScriptMessageHandler:(id &lt;WKScriptMessageHandler&gt;)scriptMessageHandler name:(NSString *)name;
+//删除handler
+- (void)removeScriptMessageHandlerForName:(NSString *)name;
+@end
+</code></pre>
+<p>那么整体我创建一个<code>WKWebView</code>的代码如下：</p>
+<pre><code class="objective-c">WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+WKUserContentController *controller = [[WKUserContentController alloc] init];
+configuration.userContentController = controller;
+self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
+self.webView.allowsBackForwardNavigationGestures = YES;    //允许右滑返回上个链接，左滑前进
+self.webView.allowsLinkPreview = YES; //允许链接3D Touch
+self.webView.customUserAgent = @&quot;WebViewDemo/1.0.0&quot;; //自定义UA，UIWebView就没有此功能，后面会讲到通过其他方式实现
+self.webView.UIDelegate = self;
+self.webView.navigationDelegate = self;
+[self.view addSubview:self.webView];
+</code></pre>
+<h4 id="动态注入js"><a href="#动态注入js" class="headerlink" title="动态注入js"></a>动态注入js</h4><p>通过给<code>userContentController</code>添加<code>WKUserScript</code>，可以实现动态注入js。比如我先注入一个脚本，给每个页面添加一个Cookie</p>
+<pre><code class="objective-c">//注入一个Cookie
+WKUserScript *newCookieScript = [[WKUserScript alloc] initWithSource:@&quot;document.cookie = &#39;DarkAngelCookie=DarkAngel;&#39;&quot; injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+[controller addUserScript:newCookieScript];
+</code></pre>
+<p>然后再注入一个脚本，每当页面加载，就会alert当前页面cookie，在OC中的实现</p>
+<pre><code class="objective-c">//创建脚本
+WKUserScript *cookieScript = [[WKUserScript alloc] initWithSource:@&quot;alert(document.cookie);&quot; injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+//添加脚本
+[controller addUserScript:script];
+</code></pre>
+<p>这样每当页面出现的时候，会alet弹出当前页面所有的cookie字符串。<img src="http://ww1.sinaimg.cn/large/006tNc79ly1ffgc3n3b8fj30ku12aq38.jpg" width="200px;"></p>
+<p>注入的js source可以是任何js字符串，也可以js文件。比如你有很多提供给h5使用的js方法，那么你本地可能就会有一个<code>native_functions.js</code>，你可以通过以下的方式添加</p>
+<pre><code class="objective-c">//防止频繁IO操作，造成性能影响
+static NSString *jsSource;
+static dispatch_once_t onceToken;
+  dispatch_once(&amp;onceToken, ^{
+      jsSource = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;native_functions&quot; ofType:@&quot;js&quot;] encoding:NSUTF8StringEncoding error:nil];
+});
+//添加自定义的脚本
+WKUserScript *js = [[WKUserScript alloc] initWithSource:jsSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+[self.configuration.userContentController addUserScript:js];
+</code></pre>
+<h4 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h4><p>加载一个请求或者页面也很简单</p>
+<pre><code class="objective-c">- (nullable WKNavigation *)loadRequest:(NSURLRequest *)request;
+- (nullable WKNavigation *)loadFileURL:(NSURL *)URL allowingReadAccessToURL:(NSURL *)readAccessURL API_AVAILABLE(macosx(10.11), ios(9.0));
+- (nullable WKNavigation *)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL;
+- (nullable WKNavigation *)loadData:(NSData *)data MIMEType:(NSString *)MIMEType characterEncodingName:(NSString *)characterEncodingName baseURL:(NSURL *)baseURL API_AVAILABLE(macosx(10.11), ios(9.0));
+</code></pre>
+<p>基本与<code>UIWebView</code>的很相似，但是需要说明的是，加载本地的一个html需要使用<code>loadRequest:</code>方法，使用<code>loadHTMLString:baseURL:</code>方法会有问题。</p>
+<pre><code class="objective-c">[self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@&quot;test&quot; ofType:@&quot;html&quot;]]]];
+</code></pre>
+<h4 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h4><p>在<code>WKWebView</code>的头文件，你会发现</p>
+<pre><code class="objective-c">@protocol WKNavigationDelegate;    //类似于UIWebView的加载成功、失败、是否允许跳转等
+@protocol WKUIDelegate;    //主要是一些alert、打开新窗口之类的
+</code></pre>
+<p>有两个协议，它将<code>UIWebView</code>的代理协议拆成了一个跳转的协议和一个关于UI的协议。虽说这两个协议中的所有方法都是Optional，但是关于<code>WKUIDelegate</code>协议是有坑的，后面的<strong>各种坑</strong>中会提到。简单说下<code>WKNavigationDelegate</code>中比较常用的方法</p>
+<pre><code class="objective-c">//下面这2个方法共同对应了UIWebView的 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
+//先：针对一次action来决定是否允许跳转，action中可以获取request，允许与否都需要调用decisionHandler，比如decisionHandler(WKNavigationActionPolicyCancel);
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler；
+//后：根据response来决定，是否允许跳转，允许与否都需要调用decisionHandler，如decisionHandler(WKNavigationResponsePolicyAllow);
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler;
+
+//开始加载，对应UIWebView的- (void)webViewDidStartLoad:(UIWebView *)webView;
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation;
+
+//加载成功，对应UIWebView的- (void)webViewDidFinishLoad:(UIWebView *)webView;
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation;
+
+//加载失败，对应UIWebView的- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error;
+- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error;
+</code></pre>
+<p><code>WKUIDelegate</code>这里先不提了，小伙伴们可以参考我<a href="https://github.com/DarkAngel7/Demos-WebViewDemo" target="_blank" rel="external">Demo</a>中的实现。</p>
+<h4 id="新属性"><a href="#新属性" class="headerlink" title="新属性"></a>新属性</h4><p><code>WKWebView.h</code>定义了如下几个常用的<code>readonly</code>属性：</p>
+<pre><code class="objective-c">@property (nullable, nonatomic, readonly, copy) NSString *title;    //页面的title，终于可以直接获取了
+@property (nullable, nonatomic, readonly, copy) NSURL *URL;        //当前webView的URL
+@property (nonatomic, readonly, getter=isLoading) BOOL loading;    //是否正在加载
+@property (nonatomic, readonly) double estimatedProgress;    //加载的进度
+@property (nonatomic, readonly) BOOL canGoBack;    //是否可以后退，跟UIWebView相同
+@property (nonatomic, readonly) BOOL canGoForward;    //是否可以前进，跟UIWebView相同
+</code></pre>
+<p>这些属性都很有用，而且支持KVO，所以我们可以通过KVO观察这些值的变化，以便于我们做出最友好的交互。</p>
+<h2 id="JavaScript与Objective-C的交互"><a href="#JavaScript与Objective-C的交互" class="headerlink" title="JavaScript与Objective-C的交互"></a>JavaScript与Objective-C的交互</h2><p>介绍完<code>WKWebView</code>的基本用法，让我们来研究下基于它的js与oc的交互。</p>
+<h3 id="OC-gt-JS"><a href="#OC-gt-JS" class="headerlink" title="OC -&gt; JS"></a>OC -&gt; JS</h3><p>这个比较简单，<code>WKWebView</code>提供了一个类似<code>JavaScriptCore</code>的方法</p>
+<pre><code class="objective-c">//执行一段js，并将结果返回，如果出错，error则不为空
+- (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler:(void (^ _Nullable)(_Nullable id result, NSError * _Nullable error))completionHandler;
+</code></pre>
+<p>该方法很好的解决了之前文章中提到的<code>UIWebView</code>使用<code>stringByEvaluatingJavaScriptFromString:</code>方法的两个缺点（1. 返回值只能是NSString。2. 报错无法捕获）。比如我想获取页面中的<code>title</code>，除了直接<code>self.webView.title</code>外，还可以通过这个方法：</p>
+<pre><code class="objective-c">[self.webView evaluateJavaScript:@&quot;document.title&quot; completionHandler:^(id _Nullable title, NSError * _Nullable error) {
+        NSLog(@&quot;调用evaluateJavaScript异步获取title：%@&quot;, title);
+}];
+</code></pre>
+<h3 id="JS-gt-OC"><a href="#JS-gt-OC" class="headerlink" title="JS -&gt; OC"></a>JS -&gt; OC</h3><h4 id="URL拦截"><a href="#URL拦截" class="headerlink" title="URL拦截"></a>URL拦截</h4><p>此方法与上篇文章中<code>UIWebView</code>介绍到的URL拦截方法一致，都是通过自定义Scheme，在链接激活时，拦截该URL，拿到参数，调用OC方法，缺点依然明显。<code>WKWebView</code>实现起来如下：</p>
+<p>比如我的链接依然是</p>
+<pre><code class="html">&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;
+</code></pre>
+<p>当用户点击这个a标签时，会被拦截</p>
+<pre><code class="objective-c">- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    //可以通过navigationAction.navigationType获取跳转类型，如新链接、后退等
+    NSURL *URL = navigationAction.request.URL;
+    //判断URL是否符合自定义的URL Scheme
+    if ([URL.scheme isEqualToString:@&quot;darkangel&quot;]) {
+        //根据不同的业务，来执行对应的操作，且获取参数
+        if ([URL.host isEqualToString:@&quot;smsLogin&quot;]) {
+            NSString *param = URL.query;
+            NSLog(@&quot;短信验证码登录, 参数为%@&quot;, param);
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+    NSLog(@&quot;%@&quot;, NSStringFromSelector(_cmd));
+}
+</code></pre>
+<p>整体实现是与<code>UIWebView</code>十分相似的，这里就不多说了。</p>
+<p>这里再次提一下<a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavascriptBridge</a>，它在最近的新版本中支持了<code>WKWebView</code>。使用的方案同样是<strong>拦截URL</strong>，具体原理在之前的文章中简单描述过，这里不再赘述。下面说下Apple的新方法。</p>
+<h4 id="scriptMessageHandler"><a href="#scriptMessageHandler" class="headerlink" title="scriptMessageHandler"></a>scriptMessageHandler</h4><p>这是Apple在<code>WebKit</code>里新增加的方法，位于<code>WKUserContentController.h</code>。</p>
+<pre><code class="objective-c">/*! @abstract Adds a script message handler.
+ @param scriptMessageHandler The message handler to add.
+ @param name The name of the message handler.
+ @discussion Adding a scriptMessageHandler adds a function
+ window.webkit.messageHandlers.&lt;name&gt;.postMessage(&lt;messageBody&gt;) for all
+ frames.
+ */
+- (void)addScriptMessageHandler:(id &lt;WKScriptMessageHandler&gt;)scriptMessageHandler name:(NSString *)name;
+
+/*! @abstract Removes a script message handler.
+ @param name The name of the message handler to remove.
+ */
+- (void)removeScriptMessageHandlerForName:(NSString *)name;
+</code></pre>
+<p>其实Apple的注释已经很清楚了，在OC中添加一个scriptMessageHandler，则会在<code>all frames</code>中添加一个js的function： <code>window.webkit.messageHandlers.&lt;name&gt;.postMessage(&lt;messageBody&gt;)</code> 。那么当我在OC中通过如下的方法添加了一个handler，如</p>
+<pre><code class="objective-c">[controller addScriptMessageHandler:self name:@&quot;currentCookies&quot;]; //这里self要遵循协 WKScriptMessageHandler
+</code></pre>
+<p>则当我在js中调用下面的方法时</p>
+<pre><code class="javascript">window.webkit.messageHandlers.currentCookies.postMessage(document.cookie);
+</code></pre>
+<p>我在OC中将会收到<code>WKScriptMessageHandler</code>的回调</p>
+<pre><code class="objective-c">- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@&quot;currentCookies&quot;]) {
+        NSString *cookiesStr = message.body;    //message.body返回的是一个id类型的对象，所以可以支持很多种js的参数类型(js的function除外)
+        NSLog(@&quot;当前的cookie为： %@&quot;, cookiesStr);
+    }
+}
+</code></pre>
+<p>当然，记得在适当的地方调用removeScriptMessageHandler</p>
+<pre><code class="objective-c">- (void)dealloc {
+    //记得移除
+    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@&quot;currentCookies&quot;];
+}
+</code></pre>
+<p>这样就完成了一次完整的JS -&gt; OC的交互。</p>
+<p><strong>问题</strong>：</p>
+<ol>
+<li>该方法还是<strong>没有办法直接获取返回值</strong>。</li>
+<li>通过<code>window.webkit.messageHandlers.&lt;name&gt;.postMessage(&lt;messageBody&gt;)</code>传递的messageBody中不能包含js的function，<strong>如果包含了function，那么 OC端将不会收到回调</strong>。</li>
+</ol>
+<p>对于问题1，我们可以采用异步回调的方式，将返回值返回给js。对于问题2，一般js的参数中包含function是为了异步回调，这里我们可以把js的function转换为字符串，再传递给OC。</p>
+<h3 id="实际运用"><a href="#实际运用" class="headerlink" title="实际运用"></a>实际运用</h3><p>关于上述问题1和问题2的结合利用，实现JS -&gt; OC的调用，并且OC -&gt; JS 异步回调结果，这里还是拿分享来举个例子。</p>
+<p>比如js端实现了如下的方法（这段js的封装前面的文章里也有提及，小伙伴有问题可以看下之前的）：</p>
+<pre><code class="javascript">  /**
+   * 分享方法，并且会异步回调分享结果
+   * @param  {对象类型} shareData 一个分享数据的对象，包含title,imgUrl,link以及一个回调function
+   * @return {void}     无同步返回值
+   */
+  function shareNew(shareData) {
+
+    //这是该方法的默认实现，上篇文章中有所提及
+      var title = shareData.title;
+      var imgUrl = shareData.imgUrl;
+      var link = shareData.link;
+      var result = shareData.result;
+      //do something
+      //这里模拟异步操作
+      setTimeout(function() {
+          //2s之后，回调true分享成功
+          result(true);
+      }, 2000);
+
+      //用于WKWebView，因为WKWebView并没有办法把js function传递过去，因此需要特殊处理一下
+      //把js function转换为字符串，oc端调用时 (&lt;js function string&gt;)(true); 即可
+      shareData.result = result.toString();
+      window.webkit.messageHandlers.shareNew.postMessage(shareData);
+  }
+
+  function test() {
+     //清空分享结果
+    shareResult.innerHTML = &quot;&quot;;
+
+      //调用时，应该
+      shareNew({
+          title: &quot;title&quot;,
+          imgUrl: &quot;http://img.dd.com/xxx.png&quot;,
+          link: location.href,
+          result: function(res) {
+              //这里shareResult 等同于 document.getElementById(&quot;shareResult&quot;)
+              shareResult.innerHTML = res ? &quot;success&quot; : &quot;failure&quot;;
+          }
+      });
+  }
+</code></pre>
+<p>在html页面中我定义了一个a标签来触发test()函数</p>
+<pre><code class="html">&lt;a href=&quot;javascript:void(0);&quot; onClick=&quot;test()&quot;&gt;测试新分享&lt;/a&gt;
+</code></pre>
+<p>在OC端，实现如下</p>
+<pre><code class="objective-c">//首先别忘了，在configuration中的userContentController中添加scriptMessageHandler
+[controller addScriptMessageHandler:self name:@&quot;shareNew&quot;];    //记得适当时候remove哦
+
+
+//点击a标签时，则会调用下面的方法
+#pragma mark - WKScriptMessageHandler 
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@&quot;shareNew&quot;]) {
+        NSDictionary *shareData = message.body;
+        NSLog(@&quot;shareNew分享的数据为： %@&quot;, shareData);
+        //模拟异步回调
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //读取js function的字符串
+            NSString *jsFunctionString = shareData[@&quot;result&quot;];
+            //拼接调用该方法的js字符串
+            NSString *callbackJs = [NSString stringWithFormat:@&quot;(%@)(%d);&quot;, jsFunctionString, NO];    //后面的参数NO为模拟分享失败
+            //执行回调
+            [self.webView evaluateJavaScript:callbackJs completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+                if (!error) {
+                    NSLog(@&quot;模拟回调，分享失败&quot;);
+                }
+            }];
+        });
+    }
+}
+</code></pre>
+<p>那么当我点击a标签时，html页面上过2s，会显示<strong>success</strong>，然后再过2s，会显示<strong>failure</strong>。<img src="http://ww2.sinaimg.cn/large/006tNc79ly1ffgcsdc7m3g309w0i776l.gif" alt="new"></p>
+<p>我们来简单分析一下，点击之后，触发了<code>test()</code>函数，<code>test()</code>中封装了对<code>share()</code>函数的调用，且传了一个对象作为参数，对象中<code>result</code>字段对应的是个匿名函数，紧接着<code>share()</code>函数调用，其中的实现是2s过后，<code>result(true);</code>模拟js异步实现异步回调结果，分享成功。同时<code>share()</code>函数中，因为通过<code>scriptMessageHandler</code>无法传递<code>function</code>，所以先把<code>shareData</code>对象中的result这个匿名<code>function</code>转成<code>String</code>，然后替换<code>shareData</code>对象的<code>result</code>属性为这个<code>String</code>，并回传给OC，OC这边对应JS对象的数据类型是<code>NSDictionary</code>，我们打印并得到了所有参数，同时，把<code>result</code>字段对应的js <code>function String</code>取出来。这里我们延迟4s回调，模拟Native分享的异步过程，在4s后，也就是js中显示<strong>success</strong>的2s过后，调用js的匿名<code>function</code>，并传递参数（分享结果）。调用一个js function的方法是 <code>functionName(argument);</code> ，这里由于这个js的function已经是一个String了，所以我们调用时，需要加上<code>()</code>，如 <code>(functionString)(argument);</code>因此，最终我们通过OC -&gt; JS 的<code>evaluateJavaScript:completionHandler:</code>方法，成功完成了异步回调，并传递给js一个分享失败的结果。</p>
+<p>上面的描述看起来很复杂，其实就是先执行了JS的默认实现，后执行了OC的实现。上面的代码展示了如何解决<code>scriptMessageHandler</code>的两个问题，并且实现了一个 JS -&gt; OC、OC -&gt; JS 完整的交互流程。</p>
+<h2 id="Cookie管理"><a href="#Cookie管理" class="headerlink" title="Cookie管理"></a>Cookie管理</h2><p>比起<code>UIWebView</code>的自动管理，<code>WKWebView</code>坑爹的<code>Cookie</code>管理，相信阻止了很多的尝试者。许多小伙伴也许曾经都想从<code>UIWebView</code>转到<code>WKWebView</code>，但估计因为<code>Cookie</code>的问题，最终都放弃了，笔者折腾<code>WKWebView</code>的<code>Cookie</code>长达多半年之久，也曾想放弃，但最终还是坚持下来了，虽说现在不敢说完全掌握，至少也不影响正常使用了。</p>
+<p>下面来说几点注意事项：</p>
+<ol>
+<li><code>WKWebView</code>加载网页得到的<code>Cookie</code>会同步到<code>NSHTTPCookieStorage</code>中（也许你看过一些文章说不能同步，但笔者这里说下，它真的会，大家可以尝试下，实践出真知）。</li>
+<li><code>WKWebView</code>加载请求时，不会同步<code>NSHTTPCookieStorage</code>中已有的<code>Cookie</code>（是的，<strong>最坑的地方</strong>）。</li>
+<li>通过共用一个<code>WKProcessPool</code>并不能解决2中<code>Cookie</code>同步问题，且可能会造成<code>Cookie</code>丢失。</li>
+</ol>
+<p>结合自己的实践和参考一些资料，笔者得到上面的结论。</p>
+<p>关于如何操作<code>NSHTTPCookieStorage</code>，前面的文章中提到过了，本文不再赘述。对于问题2，<a href="http://stackoverflow.com/questions/26573137/can-i-set-the-cookies-to-be-used-by-a-wkwebview" target="_blank" rel="external">StackOverFlow上有些解答</a>，但经过实际尝试，发现还是或多或少有一些问题。</p>
+<p>为了解决这个最为致命的Cookie问题，需要的做的有以下几点：</p>
+<h3 id="解决首次加载Cookie带不上问题"><a href="#解决首次加载Cookie带不上问题" class="headerlink" title="解决首次加载Cookie带不上问题"></a>解决首次加载Cookie带不上问题</h3><p>在request的requestHeader中添加Cookie：</p>
+<pre><code class="objective-c">NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@&quot;http://www.baidu.com&quot;]];
+NSArray *cookies = [NSHTTPCookieStorage sharedHTTPCookieStorage].cookies;
+//Cookies数组转换为requestHeaderFields
+NSDictionary *requestHeaderFields = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
+//设置请求头
+request.allHTTPHeaderFields = requestHeaderFields;
+[self.webView loadRequest:request];
+</code></pre>
+<p>这样，只要你<strong>保证<code>sharedHTTPCookieStorage</code>中你的Cookie存在</strong>，首次访问一个页面，就不会有问题。</p>
+<h3 id="解决后续Ajax请求Cookie丢失问题"><a href="#解决后续Ajax请求Cookie丢失问题" class="headerlink" title="解决后续Ajax请求Cookie丢失问题"></a>解决后续Ajax请求Cookie丢失问题</h3><p>解决此问题，也比较简单，添加<code>WKUserScript</code>。</p>
+<pre><code class="objective-c">/*!
+ *  更新webView的cookie
+ */
+- (void)updateWebViewCookie
+{
+    WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource:[self cookieString] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+    //添加Cookie
+    [self.configuration.userContentController addUserScript:cookieScript];
+}
+
+- (NSString *)cookieString
+{
+    NSMutableString *script = [NSMutableString string];
+    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        // Skip cookies that will break our script
+        if ([cookie.value rangeOfString:@&quot;&#39;&quot;].location != NSNotFound) {
+            continue;
+        }
+        // Create a line that appends this cookie to the web view&#39;s document&#39;s cookies
+        [script appendFormat:@&quot;document.cookie=&#39;%@&#39;; \n&quot;, cookie.da_javascriptString];
+    }
+    return script;
+}
+
+@interface NSHTTPCookie (Utils)
+
+- (NSString *)da_javascriptString;
+
+@end
+
+@implementation NSHTTPCookie (Utils)
+
+- (NSString *)da_javascriptString
+{
+    NSString *string = [NSString stringWithFormat:@&quot;%@=%@;domain=%@;path=%@&quot;,
+                        self.name,
+                        self.value,
+                        self.domain,
+                        self.path ?: @&quot;/&quot;];
+    if (self.secure) {
+        string = [string stringByAppendingString:@&quot;;secure=true&quot;];
+    }
+    return string;
+}
+
+@end
+</code></pre>
+<p>同样只要你<strong>保证<code>sharedHTTPCookieStorage</code>中你的Cookie存在</strong>，后续Ajax请求就不会有问题。</p>
+<h3 id="解决跳转新页面时Cookie带不过去问题"><a href="#解决跳转新页面时Cookie带不过去问题" class="headerlink" title="解决跳转新页面时Cookie带不过去问题"></a>解决跳转新页面时Cookie带不过去问题</h3><p>即便你做到了上面两点，你会发现，当你点击页面上的某个链接，跳转到新的页面，<code>Cookie</code>又丢了😳，此时你是想狗带的~怎么解决呢？</p>
+<pre><code class="objective-c">//核心方法：
+/**
+ 修复打开链接Cookie丢失问题
+
+ @param request 请求
+ @return 一个fixedRequest
+ */
+- (NSURLRequest *)fixRequest:(NSURLRequest *)request
+{
+    NSMutableURLRequest *fixedRequest;
+    if ([request isKindOfClass:[NSMutableURLRequest class]]) {
+        fixedRequest = (NSMutableURLRequest *)request;
+    } else {
+        fixedRequest = request.mutableCopy;
+    }
+    //防止Cookie丢失
+    NSDictionary *dict = [NSHTTPCookie requestHeaderFieldsWithCookies:[NSHTTPCookieStorage sharedHTTPCookieStorage].cookies];
+    if (dict.count) {
+        NSMutableDictionary *mDict = request.allHTTPHeaderFields.mutableCopy;
+        [mDict setValuesForKeysWithDictionary:dict];
+        fixedRequest.allHTTPHeaderFields = mDict;
+    }
+    return fixedRequest;
+}
+
+#pragma mark - WKNavigationDelegate 
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+
+#warning important 这里很重要
+    //解决Cookie丢失问题
+    NSURLRequest *originalRequest = navigationAction.request;
+    [self fixRequest:originalRequest];
+    //如果originalRequest就是NSMutableURLRequest, originalRequest中已添加必要的Cookie，可以跳转
+    //允许跳转
+    decisionHandler(WKNavigationActionPolicyAllow);
+    //可能有小伙伴，会说如果originalRequest是NSURLRequest，不可变，那不就添加不了Cookie了，是的，我们不能因为这个问题，不允许跳转，也不能在不允许跳转之后用loadRequest加载fixedRequest，否则会出现死循环，具体的，小伙伴们可以用本地的html测试下。
+
+    NSLog(@&quot;%@&quot;, NSStringFromSelector(_cmd));
+}
+
+#pragma mark - WKUIDelegate
+
+- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
+
+#warning important 这里也很重要
+    //这里不打开新窗口
+    [self.webView loadRequest:[self fixRequest:navigationAction.request]];
+    return nil;
+}
+</code></pre>
+<p>最终的方法，已经附上。小伙伴们自行参考。同样需要你<strong>保证<code>sharedHTTPCookieStorage</code>中你的Cookie存在</strong>。</p>
+<h3 id="解决上面3步都做了Cookie依然丢失"><a href="#解决上面3步都做了Cookie依然丢失" class="headerlink" title="解决上面3步都做了Cookie依然丢失"></a>解决上面3步都做了Cookie依然丢失</h3><p>看过上面的方法过后，小伙伴们应该记得最清楚的是<strong>保证<code>sharedHTTPCookieStorage</code>中你的Cookie存在</strong>。怎么保证呢？由于<strong><code>WKWebView</code>加载网页得到的<code>Cookie</code>会同步到<code>NSHTTPCookieStorage</code>中</strong>的特点，有时候你强行添加的<code>Cookie</code>会在同步过程中丢失。抓包（<a href="https://www.charlesproxy.com" target="_blank" rel="external">Mac推荐Charles</a>）你就会发现，点击一个链接时，<code>Request</code>的<code>header</code>中多了<code>Set-Cookie</code>字段，其实Cookie已经丢了。下面推荐笔者的解决方案，那就是把自己需要的<code>Cookie</code>主动保存起来，每次调用<code>[NSHTTPCookieStorage sharedHTTPCookieStorage].cookies</code>方法时，保证返回的数组中有自己需要的<code>Cookie</code>。下面上代码，用了<code>runtime</code>的<code>Method Swizzling</code>，详细代码，请参考<a href="https://github.com/DarkAngel7/Demos-WebViewDemo" target="_blank" rel="external">Demo</a>。</p>
+<p>首先是在适当的时候，保存</p>
+<pre><code class="objective-c">//比如登录成功，保存Cookie
+NSArray *allCookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+for (NSHTTPCookie *cookie in allCookies) {
+    if ([cookie.name isEqualToString:DAServerSessionCookieName]) {
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:DAUserDefaultsCookieStorageKey];
+        if (dict) {
+            NSHTTPCookie *localCookie = [NSHTTPCookie cookieWithProperties:dict];
+            if (![cookie.value isEqual:localCookie.value]) {
+                NSLog(@&quot;本地Cookie有更新&quot;);
+            }
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:cookie.properties forKey:DAUserDefaultsCookieStorageKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        break;
+    }
+}
+</code></pre>
+<p>在读取时，如果没有则添加</p>
+<pre><code class="objective-c">@implementation NSHTTPCookieStorage (Utils)
+
++ (void)load
+{
+    class_methodSwizzling(self, @selector(cookies), @selector(da_cookies));
+}
+
+- (NSArray&lt;NSHTTPCookie *&gt; *)da_cookies
+{
+    NSArray *cookies = [self da_cookies];
+    BOOL isExist = NO;
+    for (NSHTTPCookie *cookie in cookies) {
+        if ([cookie.name isEqualToString:DAServerSessionCookieName]) {
+            isExist = YES;
+            break;
+        }
+    }
+    if (!isExist) {
+        //CookieStroage中添加
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:DAUserDefaultsCookieStorageKey];
+        if (dict) {
+            NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:dict];
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+            NSMutableArray *mCookies = cookies.mutableCopy;
+            [mCookies addObject:cookie];
+            cookies = mCookies.copy;
+        }
+    }
+    return cookies;
+}
+
+@end
+</code></pre>
+<p>当打开手机百度首页后，我们查看页面中的Cookie<img src="http://ww4.sinaimg.cn/large/006tNc79ly1ffgge4xfiqj31jk104tj9.jpg" alt="DB6E63BA-868D-4CD2-9B1B-AC4BD1368437"></p>
+<p>其中第一个，是之前测试添加的，用来动态注入js。</p>
+<pre><code class="objective-c">WKUserScript *newCookieScript = [[WKUserScript alloc] initWithSource:@&quot;document.cookie = &#39;DarkAngelCookie=DarkAngel;&#39;&quot; injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+[controller addUserScript:newCookieScript];
+</code></pre>
+<p>第二个，就是真正有用的Cookie啦，这幅图用到了<code>Safari</code>调试，后面会讲到。通过上面的折腾，一般，就能够有效减少Cookie的丢失了。</p>
+<h2 id="性能对比"><a href="#性能对比" class="headerlink" title="性能对比"></a>性能对比</h2><p>加载一般的页面，对比不出什么，这里我就测试下内存占用吧，同样一个html，分布看下内存占用。</p>
+<p>UIWebView<img src="http://ww4.sinaimg.cn/large/006tNc79ly1ffggxn9b71j318q0gowhc.jpg" alt="C9A288B5-77EE-4FAF-8BAE-1F3E3AD7C86C"></p>
+<p>WKWebView<img src="http://ww4.sinaimg.cn/large/006tNc79ly1ffggyx4o9wj31880gqgon.jpg" alt="A8AC12E1-DCDB-453A-AC24-30434485B287"></p>
+<p>从页面UI元素上看，<code>WKWebView</code>还多个<code>barButtonItem</code>呢，这么简单个页，内存占用也小了3M，复杂的页面可想而知。</p>
+<h2 id="各种坑"><a href="#各种坑" class="headerlink" title="各种坑"></a>各种坑</h2><p>虽然<code>WKWebView</code>真的很不错，但是它的坑，还是有很多的，下面简单说下。</p>
+<h3 id="js-alert方法不弹窗"><a href="#js-alert方法不弹窗" class="headerlink" title="js alert方法不弹窗"></a>js alert方法不弹窗</h3><p>之前提过<code>WKUIDelegate</code>所有的方法都是<code>Optional</code>，但如果你不实现，它就会</p>
+<blockquote>
+<p> If you do not implement this method, the web view will behave as if the user selected the OK button.</p>
+<pre><code class="objective-c">- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler;
+</code></pre>
+</blockquote>
+<p>OK，意思就是说，如果不实现，就什么都不发生，好吧，乖乖实现吧，实现了就能弹窗了。</p>
+<h3 id="白屏问题"><a href="#白屏问题" class="headerlink" title="白屏问题"></a>白屏问题</h3><p>当WKWebView加载的网页占用内存过大时，会出现白屏现象。解决方案是</p>
+<pre><code class="objective-c">/*! @abstract Invoked when the web view&#39;s web content process is terminated.
+ @param webView The web view whose underlying web content process was terminated.
+ */
+- (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView {
+    [webView reload];    //刷新就好了
+}
+</code></pre>
+<p>有时白屏，不会调用该方法，具体的解决方案是</p>
+<blockquote>
+<p>比如，最近遇到在一个高内存消耗的H5页面上 present 系统相机，拍照完毕后返回原来页面的时候出现白屏现象（拍照过程消耗了大量内存，导致内存紧张，WebContent Process 被系统挂起），但上面的回调函数并没有被调用。在WKWebView白屏的时候，另一种现象是 webView.titile 会被置空, 因此，可以在 viewWillAppear 的时候检测 webView.title 是否为空来 reload 页面。（出自<a href="http://mp.weixin.qq.com/s/rhYKLIbXOsUJC_n6dt9UfA" target="_blank" rel="external">WKWebView 那些坑</a>）</p>
+</blockquote>
+<h3 id="Cookie丢失"><a href="#Cookie丢失" class="headerlink" title="Cookie丢失"></a>Cookie丢失</h3><p>从一个登录状态的页面跳转到另一个页面，WTF，登录状态丢失了？什么鬼？其实上文中的<strong>Cookie管理</strong>一节，已经介绍过解决方案了，原因也就是<strong><code>WKWebView</code>加载请求时，不会同步<code>NSHTTPCookieStorage</code>中已有的<code>Cookie</code></strong>。如果偶尔还是会出现丢失登录状态的情况，那笔者只能说，再检查下自己的代码，找找原因，有好的解决方案，欢迎告知笔者。</p>
+<h3 id="evaluateJavaScript-completionHandler-异步"><a href="#evaluateJavaScript-completionHandler-异步" class="headerlink" title="evaluateJavaScript:completionHandler:异步"></a>evaluateJavaScript:completionHandler:异步</h3><p>该方法是异步回调，这个一看方法的声明便知。可能有小伙伴就是需要同步获取返回值，有没有办法呢？答案是<strong>没有</strong>。</p>
+<p>可能你会说用信号量<code>dispatch_semaphore_t</code>。好吧，可能你会这么写~</p>
+<pre><code class="objective-c">__block id cookies;
+dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+[self.webView evaluateJavaScript:@&quot;document.cookie&quot; completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+    cookies = result;
+    dispatch_semaphore_signal(semaphore);
+}];
+//等待三秒，接收参数
+dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC));
+//打印cookie，肯定为空，因为足足等了3s，dispatch_semaphore_signal都没有起作用
+NSLog(@&quot;cookie的值为：%@&quot;, cookies);
+</code></pre>
+<p>笔者故意只等待了3s，如果你等待<code>DISPATCH_TIME_FOREVER</code>，恭喜你，程序不会Crash，但界面卡死了。笔者测试的结果是，<code>NSLog</code>的触发时间要早于<code>completionHandler</code>回调，不论你等多久，它都会打印null。所以当你永久等待时，就卡死了。这里的缘由，笔者不太清楚，有搞清楚的小伙伴可以帮忙指点一下，谢谢~</p>
+<p>所以还是老实的接受异步回调吧，不要用信号来搞成同步，会卡死的。</p>
+<h3 id="自定义contentInset刷新时页面跳动的bug"><a href="#自定义contentInset刷新时页面跳动的bug" class="headerlink" title="自定义contentInset刷新时页面跳动的bug"></a>自定义contentInset刷新时页面跳动的bug</h3><p>PM说毛玻璃好看，👌，so easy，于是我们在代码如敲下</p>
+<pre><code class="objective-c">self.webView.scrollView.contentInset = UIEdgeInsetsMake(64, 0, 49, 0);
+</code></pre>
+<p>然后默默的微笑着点击了cmd + R，太简单了。然后看到了这样的画面</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1ffgi7f2g9qg30ck0n9anq.gif" alt="new"></p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1ffghw4zwopj3068061wed.jpg" alt="timg"></p>
+<p>是的，上面的方法在<code>UIWebView</code>中没毛病，可是在<code>WKWebView</code>中，就产生了刷新时页面跳动的bug。</p>
+<p>这个坑，坑了我大半年之久，Apple的<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/WebKit/ObjC_classic/index.html" target="_blank" rel="external">Document</a>中没有记录，最终笔者在Apple开源的<a href="https://opensource.apple.com/source/WebKit2/" target="_blank" rel="external">WebKit2</a>的<a href="[https://opensource.apple.com/source/WebKit2/WebKit2-7603.1.30.0.34/ChangeLog-2014-10-07.auto.html](https://opensource.apple.com/source/WebKit2/WebKit2-7603.1.30.0.34/ChangeLog-2014-10-07.auto.html">ChangeLog</a>)中找到了答案。下面是官方人员的回答：</p>
+<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1ffghllqjz6j310w0ewagc.jpg" alt="A9018C2C-BB21-41A1-9A67-E6CCE2D75A0E"></p>
+<p>厉害了，word哥，我选择狗带，居然还是私有Api。怎么整呢？</p>
+<pre><code class="objective-c">self.webView.scrollView.contentInset = UIEdgeInsetsMake(64, 0, 49, 0);
+//史诗级神坑，为何如此写呢？参考https://opensource.apple.com/source/WebKit2/WebKit2-7600.1.4.11.10/ChangeLog  
+[self.webView setValue:[NSValue valueWithUIEdgeInsets:self.webView.scrollView.contentInset] forKey:@&quot;_obscuredInsets&quot;];    //kvc给WKWebView的私有变量_obscuredInsets设置值
+</code></pre>
+<p>这么写就OK了，通过KVC设置私有变量的值，笔者用了半年了，过Apple审核没问题，不用担心。如果这个能帮助到大家，不用感谢我~</p>
+<h3 id="加载POST请求丢失RequestBody"><a href="#加载POST请求丢失RequestBody" class="headerlink" title="加载POST请求丢失RequestBody"></a>加载POST请求丢失RequestBody</h3><p>这个问题，没有直接的解决办法。问题的根源在于：</p>
+<blockquote>
+<p>在 webkit2 的设计里使用 MessageQueue 进行进程之间的通信，Network Process 会将请求 encode 成一个 Message,然后通过 IPC 发送给 App Process。出于性能的原因，encode 的时候 HTTPBody 和 HTTPBodyStream 这两个字段被丢弃掉了。</p>
+<p>因此，<strong>如果通过 registerSchemeForCustomProtocol 注册了 http(s) scheme, 那么由 WKWebView 发起的所有 http(s)请求都会通过 IPC 传给主进程 NSURLProtocol 处理，导致 post 请求 body 被清空</strong>。</p>
+<p>（出自<a href="http://mp.weixin.qq.com/s/rhYKLIbXOsUJC_n6dt9UfA" target="_blank" rel="external">WKWebView 那些坑</a>）</p>
+</blockquote>
+<p>参考 <a href="https://github.com/WebKit/webkit/blob/fe39539b83d28751e86077b173abd5b7872ce3f9/Source/WebKit2/Shared/mac/WebCoreArgumentCodersMac.mm#L61-L88" target="_blank" rel="external">Apple源码</a> 及 <a href="https://bugs.webkit.org/show_bug.cgi?id=138169" target="_blank" rel="external">bug report</a> 。</p>
+<p>具体的解决办法，就是另辟蹊径，<a href="http://mp.weixin.qq.com/s/rhYKLIbXOsUJC_n6dt9UfA" target="_blank" rel="external">WKWebView 那些坑</a>中有介绍，这里笔者不再展开。</p>
+<p>因为<code>WKWebView</code>被设计的使用场景，是用来当做浏览器，解决Native可以直接在App内浏览网页的问题。而浏览器浏览一个网站，怎么可能是POST请求呢？所以这个问题，笔者目前感受较小，有需要的小伙伴可以自行解决。</p>
+<h3 id="NSURLProtocol问题"><a href="#NSURLProtocol问题" class="headerlink" title="NSURLProtocol问题"></a>NSURLProtocol问题</h3><p><code>WKWebView</code>不同于<code>UIWebView</code>，其实并不支持<code>NSURLProtocol</code>。如果想拦截，可以通过调用私有Api。</p>
+<pre><code class="objective-c">+ [WKBrowsingContextController registerSchemeForCustomProtocol:]
+</code></pre>
+<p>此方法缺点也很多，笔者这里不推荐小伙伴使用，毕竟调用私有Api是Apple禁止的。况且，真的必须使用<code>NSURLProtocol</code>的话，还是用<code>UIWebView</code>吧。</p>
+<h1 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h1><p>本文主要讲述了<code>WKWebView</code>的一些基础用法、OC与JS的交互，Cookie的管理，以及一些使用过程中的坑，旨在为没用过的小伙伴们详细介绍下。虽然它的坑很多，但是它的优点也有很多，我们应该敢于拥抱新事物，拥抱新知识。还在等什么？<code>WKWebView</code>赶快用起来吧~</p>
+<p>下篇文章，将主要为小伙伴们介绍下如果用Safari调试，实际应用中一些需求如何实现，如何更好的与前端h5开发同学配合以及如何找出问题所在等。下篇文章见~</p>
+<p>To be continued…</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; titl
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>iOS中NSUserDefaults的黑科技</title>
@@ -496,14 +1047,14 @@ https://www.pgyer.com/apiv1/app/upload
     <link href="http://blog.darkangel7.com/2016/09/01/iOS%E4%B8%ADUIWebView%E4%B8%8EWKWebView%E3%80%81JavaScript%E4%B8%8EOC%E4%BA%A4%E4%BA%92%E3%80%81Cookie%E7%AE%A1%E7%90%86%E7%9C%8B%E6%88%91%E5%B0%B1%E5%A4%9F%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
     <id>http://blog.darkangel7.com/2016/09/01/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）/</id>
     <published>2016-09-01T07:37:29.000Z</published>
-    <updated>2017-05-09T10:48:07.000Z</updated>
+    <updated>2017-05-10T12:15:55.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>iOS开发中，用来显示一个html页、H5页，经常会用的一个控件是WebView。说到WebView，你知道多少呢？是简单的展示，还是要和OC交互实现比较复杂的功能呢？本文将为您介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。</p>
 <p>文章因涉及到的内容较多，因此拆分成以下几部分：</p>
 <ul>
 <li>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）</li>
-<li><a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a>（待填坑…）</li>
+<li><a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a></li>
 <li><a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）</a>（待填坑…）</li>
 </ul>
 <p>关于文中提到的一些内容，这里我准备了个<a href="https://github.com/DarkAngel7/Demos-WebViewDemo" target="_blank" rel="external">Demo</a>，有需要的小伙伴可以下载。</p>
@@ -762,6 +1313,7 @@ request.allHTTPHeaderFields = requestHeaderFields;
 <p>整体来说<code>UIWebView</code>的<code>Cookie</code>管理比较简单，小伙伴们可以自己写个demo测试一下，发挥你们的想象。</p>
 <h1 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h1><p>关于<code>UIWebView</code>的介绍，以及使用<code>UIWebView</code>进行JS与OC的交互，<code>Cookie</code>的管理，就先简单介绍到这里。如果有小伙伴对于<a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavascriptBridge</a>比较感兴趣，可以留言，根据留言我考虑一下写一篇文章，分析它的详细实现。</p>
 <p>另外，后续将为您介绍<code>WKWebView</code>的用法，一些OC与JS交互，Cookie管理、如何在<code>Safari</code>中调试以及一些不为人知的坑等，敬请期待~</p>
+<p>下篇文章已发布：<a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a>。</p>
 <p>To be continued…</p>
 ]]></content>
     
