@@ -1047,14 +1047,14 @@ https://www.pgyer.com/apiv1/app/upload
     <link href="http://blog.darkangel7.com/2016/09/01/iOS%E4%B8%ADUIWebView%E4%B8%8EWKWebView%E3%80%81JavaScript%E4%B8%8EOC%E4%BA%A4%E4%BA%92%E3%80%81Cookie%E7%AE%A1%E7%90%86%E7%9C%8B%E6%88%91%E5%B0%B1%E5%A4%9F%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
     <id>http://blog.darkangel7.com/2016/09/01/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）/</id>
     <published>2016-09-01T07:37:29.000Z</published>
-    <updated>2017-05-10T12:15:55.000Z</updated>
+    <updated>2017-05-10T12:16:39.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>iOS开发中，用来显示一个html页、H5页，经常会用的一个控件是WebView。说到WebView，你知道多少呢？是简单的展示，还是要和OC交互实现比较复杂的功能呢？本文将为您介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。</p>
 <p>文章因涉及到的内容较多，因此拆分成以下几部分：</p>
 <ul>
 <li>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）</li>
-<li><a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a></li>
+<li><a href="http://blog.darkangel7.com/2017/05/10/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）/">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a></li>
 <li><a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）</a>（待填坑…）</li>
 </ul>
 <p>关于文中提到的一些内容，这里我准备了个<a href="https://github.com/DarkAngel7/Demos-WebViewDemo" target="_blank" rel="external">Demo</a>，有需要的小伙伴可以下载。</p>
@@ -1313,7 +1313,7 @@ request.allHTTPHeaderFields = requestHeaderFields;
 <p>整体来说<code>UIWebView</code>的<code>Cookie</code>管理比较简单，小伙伴们可以自己写个demo测试一下，发挥你们的想象。</p>
 <h1 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h1><p>关于<code>UIWebView</code>的介绍，以及使用<code>UIWebView</code>进行JS与OC的交互，<code>Cookie</code>的管理，就先简单介绍到这里。如果有小伙伴对于<a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavascriptBridge</a>比较感兴趣，可以留言，根据留言我考虑一下写一篇文章，分析它的详细实现。</p>
 <p>另外，后续将为您介绍<code>WKWebView</code>的用法，一些OC与JS交互，Cookie管理、如何在<code>Safari</code>中调试以及一些不为人知的坑等，敬请期待~</p>
-<p>下篇文章已发布：<a href="">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a>。</p>
+<p>下篇文章已发布：<a href="http://blog.darkangel7.com/2017/05/10/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）/">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a>。</p>
 <p>To be continued…</p>
 ]]></content>
     
