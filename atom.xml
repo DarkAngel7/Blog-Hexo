@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-12T11:56:12.000Z</updated>
+  <updated>2017-05-12T12:00:03.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2017/05/11/iOS%E4%B8%ADUIWebView%E4%B8%8EWKWebView%E3%80%81JavaScript%E4%B8%8EOC%E4%BA%A4%E4%BA%92%E3%80%81Cookie%E7%AE%A1%E7%90%86%E7%9C%8B%E6%88%91%E5%B0%B1%E5%A4%9F%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
     <id>http://blog.darkangel7.com/2017/05/11/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）/</id>
     <published>2017-05-11T06:25:40.000Z</published>
-    <updated>2017-05-12T11:56:12.000Z</updated>
+    <updated>2017-05-12T12:00:03.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在前面的文章中，我们介绍了<code>UIWebView</code>、<code>WKWebView</code>一些使用，与JS的交互和一些坑，相信看过的小伙伴们，已经大概清楚了吧，如果有问题，欢迎提问。</p>
@@ -311,7 +311,7 @@ var thumbnailImageUrl = document.getElementsByTagName(&quot;img&quot;)[0].src;  
 var webpageUrl = location.href;
 </code></pre>
 <p>具体如何用OC调用JS获取这些值，这里就不多说了，看过前面文章的小伙伴，可以自行实现。</p>
-<h2 id="Native为H5提供一套Native-Api（微信、支付宝小程序）"><a href="#Native为H5提供一套Native-Api（微信、支付宝小程序）" class="headerlink" title="Native为H5提供一套Native Api（微信、支付宝小程序）"></a>Native为H5提供一套Native Api（微信、支付宝小程序）</h2><p>很多时候，Native与H5交互的深了，必定会有一些更深层次的需求。比如h5想控制页面的pop、push、present，想调用Native的Share，想调用Native的扫描二维码功能，获取扫描结果……</p>
+<h2 id="Native为H5提供一套Native-Api（微信、支付宝小程序）"><a href="#Native为H5提供一套Native-Api（微信、支付宝小程序）" class="headerlink" title="Native为H5提供一套Native Api（微信、支付宝小程序）"></a>Native为H5提供一套Native Api（微信、支付宝小程序）</h2><p>很多时候，Native与H5交互得深了，必定会有一些更深层次的需求。比如h5想控制页面的pop、push、present，想调用Native的Share，想调用Native的扫描二维码功能，获取扫描结果……</p>
 <p>那么近半年比较🔥的小程序，微信提供的一些Api（扫码、选择照片等）都是如何实现的呢？很明显，native提供的。</p>
 <p>笔者作为支付宝小程序（尚未发布）的内测用户之一，也接触了支付宝小程序，其中也有很多Api是native提供的。</p>
 <p>其实这就涉及到一个完整的Native与JS交互的流程，<strong>从JS-&gt;Native到Native-&gt;JS</strong>。也就是前面介绍过的，异步回调结果。这个不局限于iOS，Android也是同样的。</p>

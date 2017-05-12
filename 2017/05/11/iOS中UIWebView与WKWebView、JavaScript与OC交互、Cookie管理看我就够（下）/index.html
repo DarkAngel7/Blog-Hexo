@@ -360,7 +360,7 @@ var thumbnailImageUrl = document.getElementsByTagName(&quot;img&quot;)[0].src;  
 var webpageUrl = location.href;
 </code></pre>
 <p>具体如何用OC调用JS获取这些值，这里就不多说了，看过前面文章的小伙伴，可以自行实现。</p>
-<h2 id="Native为H5提供一套Native-Api（微信、支付宝小程序）"><a href="#Native为H5提供一套Native-Api（微信、支付宝小程序）" class="headerlink" title="Native为H5提供一套Native Api（微信、支付宝小程序）"></a>Native为H5提供一套Native Api（微信、支付宝小程序）</h2><p>很多时候，Native与H5交互的深了，必定会有一些更深层次的需求。比如h5想控制页面的pop、push、present，想调用Native的Share，想调用Native的扫描二维码功能，获取扫描结果……</p>
+<h2 id="Native为H5提供一套Native-Api（微信、支付宝小程序）"><a href="#Native为H5提供一套Native-Api（微信、支付宝小程序）" class="headerlink" title="Native为H5提供一套Native Api（微信、支付宝小程序）"></a>Native为H5提供一套Native Api（微信、支付宝小程序）</h2><p>很多时候，Native与H5交互得深了，必定会有一些更深层次的需求。比如h5想控制页面的pop、push、present，想调用Native的Share，想调用Native的扫描二维码功能，获取扫描结果……</p>
 <p>那么近半年比较🔥的小程序，微信提供的一些Api（扫码、选择照片等）都是如何实现的呢？很明显，native提供的。</p>
 <p>笔者作为支付宝小程序（尚未发布）的内测用户之一，也接触了支付宝小程序，其中也有很多Api是native提供的。</p>
 <p>其实这就涉及到一个完整的Native与JS交互的流程，<strong>从JS-&gt;Native到Native-&gt;JS</strong>。也就是前面介绍过的，异步回调结果。这个不局限于iOS，Android也是同样的。</p>
