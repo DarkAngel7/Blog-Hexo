@@ -197,8 +197,8 @@ for (var i = 0; i &lt; imgs.length; i++) {
     if (img.src || img.getAttribute(&#39;data-src&#39;)) {
         //添加到图片链接数组中
         imgUrls.push(img.src || img.getAttribute(&#39;data-src&#39;));
-        //如果图片没有默认的onclick事件，则添加onclick事件，当用户点击时，把图片链接回传给Native
-        if (!img.onclick) {
+        //如果图片没有默认的onclick事件，且父元素不是a标签，则添加onclick事件，当用户点击时，把图片链接回传给Native
+        if (!img.onclick &amp;&amp; img.parentElement.tagName !== &quot;A&quot;) {
             //给图片添加下标的属性
             img.index = i; //记录下标
             //添加点击事件，并且回传选中的图片链接、下标、屏幕上的位置、全部的图片数组等
