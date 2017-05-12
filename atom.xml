@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-12T11:20:30.000Z</updated>
+  <updated>2017-05-12T11:46:03.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2017/05/11/iOS%E4%B8%ADUIWebView%E4%B8%8EWKWebView%E3%80%81JavaScript%E4%B8%8EOC%E4%BA%A4%E4%BA%92%E3%80%81Cookie%E7%AE%A1%E7%90%86%E7%9C%8B%E6%88%91%E5%B0%B1%E5%A4%9F%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
     <id>http://blog.darkangel7.com/2017/05/11/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）/</id>
     <published>2017-05-11T06:25:40.000Z</published>
-    <updated>2017-05-12T11:20:30.000Z</updated>
+    <updated>2017-05-12T11:46:03.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在前面的文章中，我们介绍了<code>UIWebView</code>、<code>WKWebView</code>一些使用，与JS的交互和一些坑，相信看过的小伙伴们，已经大概清楚了吧，如果有问题，欢迎提问。</p>
@@ -242,7 +242,7 @@ function h5ImageDidClick(info) {
 </code></pre>
 </blockquote>
 <p>拿到了这些信息，想必，你可以实现一个十分完美的<strong>图片预览效果</strong>了。</p>
-<h2 id="Native加载并缓存H5页面的中img"><a href="#Native加载并缓存H5页面的中img" class="headerlink" title="Native加载并缓存H5页面的中img"></a>Native加载并缓存H5页面的中img</h2><p>因为页面中的img标签加载图片的网络请求是由<code>WebView</code>管理的，所以要想Native接管图片的下载，只有2条路：</p>
+<h2 id="Native加载并缓存H5页面中的img"><a href="#Native加载并缓存H5页面中的img" class="headerlink" title="Native加载并缓存H5页面中的img"></a>Native加载并缓存H5页面中的img</h2><p>因为页面中的img标签加载图片的网络请求是由<code>WebView</code>管理的，所以要想Native接管图片的下载，只有2条路：</p>
 <blockquote>
 <ol>
 <li>在页面加载前，把页面中img标签的src换成一张native的占位图或者””，并且把img.src传递到native，在native下载图片或者读取缓存完毕后，再把相应的img标签的src设置成本地的，如img.src =”native cache url”。整体交互是JS-&gt;Native, Native -&gt; JS。</li>
