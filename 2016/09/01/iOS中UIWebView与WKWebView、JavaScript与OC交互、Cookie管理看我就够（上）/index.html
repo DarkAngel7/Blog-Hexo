@@ -202,7 +202,7 @@ WebViewJavascriptBridge.callHandler(&#39;share&#39;, shareData, function(respons
 }
 </code></pre>
 <p>在html或者js的某处，点击a标签调用这个share方法，并传参，如</p>
-<pre><code class="html">&lt;a href=&quot;javascript:void(0);&quot; class=&quot;sharebtn&quot; onClick=&quot;share(&#39;分享标题&#39;, &#39;http://cc.cocimg.com/api/uploads/170425/b2d6e7ea5b3172e6c39120b7bfd662fb.jpg&#39;, location.href)&quot;&gt;分享活动，领30元红包&lt;/a&gt;
+<pre><code class="html">&lt;a href=&quot;javascript:void(0);&quot; class=&quot;sharebtn&quot; onclick=&quot;share(&#39;分享标题&#39;, &#39;http://cc.cocimg.com/api/uploads/170425/b2d6e7ea5b3172e6c39120b7bfd662fb.jpg&#39;, location.href)&quot;&gt;分享活动，领30元红包&lt;/a&gt;
 </code></pre>
 <p>此时，如果用户点击了<strong><u>分享活动，领30元红包</u></strong>这个标签，那么在控制台会打印出所有参数<img src="http://ww2.sinaimg.cn/large/006tNc79ly1fff18hle74j31ak0hiah2.jpg" alt=""></p>
 <p>上面的代码实现了OC方法替换JS实现。它十分灵活，主要依赖这些Api。</p>

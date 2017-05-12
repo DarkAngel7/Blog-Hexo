@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下） | Dark Angel</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/8.5/styles/github.min.css">
+  <meta name="generator" content="Dark Angel">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="site-head"  style="background: #24282b url(/img/img-bg.jpg) center; background-size: cover" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="/img/avatar.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">Dark Angel</h1>
+            <h2 class="blog-description"><button id="showMenu">Show Menu</button></h2>
+        </div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2017-05-11T06:25:40.000Z" itemprop="datePublished">
+          2017-05-11
+      </time>
+    
+    
+    | 
+    <a href='/tags/iOS技术分享/'>iOS技术分享</a>
+    
+    
+</span>
+    <h1 class="post-title">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）</h1>
+    <span id="busuanzi_value_page_pv"></span>次阅读
+    <span class="ds-thread-count" data-thread-key="2017/05/11/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）/"></span>
+    <section class="post-content">
+     	
+              <div id="toc" class="toc-article">
+                <strong class="toc-title">本文目录</strong>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Safari调试"><span class="toc-text">Safari调试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#开启Safari开发菜单"><span class="toc-text">开启Safari开发菜单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iPhone开启Web检查器"><span class="toc-text">iPhone开启Web检查器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行App"><span class="toc-text">运行App</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试对应的页面"><span class="toc-text">调试对应的页面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#与前端配合解决bug"><span class="toc-text">与前端配合解决bug</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#实际应用中一些需求的实现"><span class="toc-text">实际应用中一些需求的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义浏览器UserAgent"><span class="toc-text">自定义浏览器UserAgent</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Native与H5共享登录状态"><span class="toc-text">Native与H5共享登录状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Native预览H5页面中的image"><span class="toc-text">Native预览H5页面中的image</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方案"><span class="toc-text">方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UIWebView实现"><span class="toc-text">UIWebView实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WKWebView实现"><span class="toc-text">WKWebView实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Native加载并缓存H5页面的中img"><span class="toc-text">Native加载并缓存H5页面的中img</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Native分享H5页面到微信、QQ等"><span class="toc-text">Native分享H5页面到微信、QQ等</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Native为H5提供一套Native-Api（微信、支付宝小程序）"><span class="toc-text">Native为H5提供一套Native Api（微信、支付宝小程序）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分享"><span class="toc-text">分享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#从通讯录选择联系人"><span class="toc-text">从通讯录选择联系人</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扫描二维码"><span class="toc-text">扫描二维码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+              </div>
+            
+	 <p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在前面的文章中，我们介绍了<code>UIWebView</code>、<code>WKWebView</code>一些使用，与JS的交互和一些坑，相信看过的小伙伴们，已经大概清楚了吧，如果有问题，欢迎提问。</p>
+<p>本文是本系列文章的最后一篇，主要为小伙伴们分享下<strong>Safari调试</strong>、<strong>与前端的配合</strong>以及<strong>实际应用中一些需求的实现等</strong>：</p>
+<ul>
+<li><a href="http://blog.darkangel7.com/2016/09/01/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）/">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）</a></li>
+<li><a href="http://blog.darkangel7.com/2017/05/10/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）/">iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）</a></li>
+<li>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）</li>
+</ul>
+<p>关于文中提到的一些内容，这里我准备了个<a href="https://github.com/DarkAngel7/Demos-WebViewDemo" target="_blank" rel="external">Demo</a>，有需要的小伙伴可以下载。</p>
+<h1 id="Safari调试"><a href="#Safari调试" class="headerlink" title="Safari调试"></a>Safari调试</h1><p>在前面的文章中，查看网页的Cookie，其实已经用到了Safari调试。笔者觉得Safari调试功能真的很有用，通过它可以轻松定位问题的所在。也因此，公司中App一旦有问题出现，不管是客户端的问题，还是前端的问题，找问题的重任都落到了笔者的身上呢。这一度是一个困扰😪。想象一下，h5页面的一个bug，App端帮忙快速定位，并且告知h5相关开发人员该如何修复，是多么伟大的一件事情。</p>
+<p>下面来简单讲讲怎么用Safari调试。</p>
+<h2 id="开启Safari开发菜单"><a href="#开启Safari开发菜单" class="headerlink" title="开启Safari开发菜单"></a>开启Safari开发菜单</h2><p>在Mac的Safari偏好设置中，开启开发菜单。具体步骤为：<strong>Safari -&gt; 偏好设置… -&gt; 高级 -&gt; 勾选在菜单栏显示“开发”菜单</strong>。</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNbRwly1ffhhv5gt96j31as0w0dus.jpg" alt="B49417E2-433A-4650-8BF7-AF941E8B6670"></p>
+<h2 id="iPhone开启Web检查器"><a href="#iPhone开启Web检查器" class="headerlink" title="iPhone开启Web检查器"></a>iPhone开启Web检查器</h2><p>具体步骤为：<strong>设置 -&gt; Safari -&gt; 高级 -&gt; Web 检查器</strong>。</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffhi80ocj7j31kw0yugzs.jpg" alt="8AECBA1E-FF4A-4D7F-8D74-E224035EA418"></p>
+<h2 id="运行App"><a href="#运行App" class="headerlink" title="运行App"></a>运行App</h2><p>打开项目，Cmd + R 运行，打开想调试的Web页面。</p>
+<p><img src="http://ww4.sinaimg.cn/large/006tNbRwly1ffhiit6h9oj30ku12agvo.jpg" width="30%"></p>
+<h2 id="调试对应的页面"><a href="#调试对应的页面" class="headerlink" title="调试对应的页面"></a>调试对应的页面</h2><p>打开<strong>Safari -&gt; 开发 -&gt; 设备 -&gt; URL。</strong></p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffhiovms7ej31kw0w2kjl.jpg" alt="5B046813-A658-45B4-9ED2-A1480BA5EE99"></p>
+<p>选中的页面会变成蓝色，点击然后打开了如下的界面。</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNbRwly1ffhiqs8pnnj31jk104wx4.jpg" alt="693A55F1-ADD7-4D84-B8D1-4B669D3CF561"></p>
+<p>这个页面就很像<code>Windows</code> 平台<code>Chrome</code>的<code>F12</code>。可以打断点：</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffhjiak74qj31jk1044df.jpg" alt="7A23FD0A-40A9-48D9-B53E-B721F455C1D5"></p>
+<p>查看断点</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNbRwly1ffhjk62o3bj31jk104gxb.jpg" alt="E2ABC34F-D227-4A71-AC0C-7C3AC9B730F9"></p>
+<p>查看Cookie</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNbRwly1ffhjl2y69zj31jk104n6a.jpg" alt="0E90DD8A-B178-4EF3-BF8C-F90C6E3A278F"></p>
+<p>打印Cookie或者元素<br><img src="http://ww3.sinaimg.cn/large/006tNbRwly1ffhjmbt52kj31jk104tgk.jpg" alt="834DB431-32B4-44EC-BED2-05E3D124FFBA"></p>
+<p>比如我在这里Alert页面的title，输入 <code>alert(document.title);</code>，你会在模拟器中看到弹窗</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNbRwly1ffhjo6usmvj31j40zkart.jpg" alt="550D157D-0F2E-41E1-B5E3-85928FFCBCAC"></p>
+<p>整体十分有用，操作的体验跟<code>Xcode</code>很像，小伙伴们自行探索。</p>
+<h1 id="与前端配合解决bug"><a href="#与前端配合解决bug" class="headerlink" title="与前端配合解决bug"></a>与前端配合解决bug</h1><p>前端有一些问题，在浏览器中是无法调试的，很可能只在App内的浏览器中才会复现。这个时候你可以期待前端开发人员会使用<code>Xcode</code>和<code>Safari</code>调试来解决bug，或者靠自己。毕竟大家的目标一致，给用户提供一个更好的App，解决所有已知问题。</p>
+<p>这里我举个例子，运用Safari调试来解决一个前端的bug。</p>
+<p>比如新做的h5页面中，有一个分享按钮，点击调用原生的分享，但是发现，点击之后没有反应了，什么问题呢？是Native端实现有问题，还是前端写的有问题呢？如图</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffhjxcad71j30ko0gy75u.jpg" width="30%"></p>
+<p>我们来帮忙看下吧，打开Safari <strong>Web 检查器</strong>，定位到资源，并且在share方法中添加断点，如图</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffhk1xng71j31jk1044ag.jpg" alt="76A2E384-0A07-4DA0-8D5C-61DB988C4AE0"></p>
+<p>会发现，并没有断住，而是页面直接报错了，仔细查看错误描述，share方法里多了一个<code>“/”</code>，因此报错了。当我点击分享按钮时<img src="http://ww3.sinaimg.cn/large/006tNbRwly1ffhk3hpu55j312q036aaw.jpg" alt="6792A001-7ACC-4336-BF1E-6A03983C74E1">会发现，提示找不到变量<code>share</code>。这里我需要说明一下：</p>
+<blockquote>
+<p>当js中报错的时候，报错位置所在的函数以及报错位置之后的代码，都不会执行，所以我点击分享时，提示的是找不到方法，因为js的语法不对，报错了，这里解析不出来，所以也就没有了<code>share</code>、<code>testAddMethod</code>和之后的函数。</p>
+<p>那么当我点击分享下面的按钮是，调用share下面定义的方法也就会提示找不到对应的函数了。<img src="http://ww2.sinaimg.cn/large/006tNbRwly1ffhk6n0oozj30ko02mwen.jpg" width="50%"></p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNbRwly1ffhk88lyzkj311i03o76a.jpg" alt=""></p>
+</blockquote>
+<p>至此，问题找到了，只要告之前端开发人员即可，让他修复即可。</p>
+<p>实际遇到的问题可能要复杂的多，可以通过断点，以及控制台打印一些js变量的值，DOM操作来寻找问题，解决问题。希望可以帮助到小伙伴们。</p>
+<h1 id="实际应用中一些需求的实现"><a href="#实际应用中一些需求的实现" class="headerlink" title="实际应用中一些需求的实现"></a>实际应用中一些需求的实现</h1><h2 id="自定义浏览器UserAgent"><a href="#自定义浏览器UserAgent" class="headerlink" title="自定义浏览器UserAgent"></a>自定义浏览器UserAgent</h2><p>这个其实在App开发中，比较重要。比如常见的微信、支付宝App等，都有自己的<code>UserAgent</code>，而UA最常用来判断在哪个App内，一般App的下载页中只有一个按钮”点击下载”，当用户点击该按钮时，在微信中则跳转到应用宝，否则跳转到AppStore。那么如何区分在哪个App中呢？就是js判断UA。</p>
+<pre><code class="javascript">//js中判断
+if (navigator.userAgent.indexOf(&quot;MicroMessenger&quot;) !== -1) {
+   //在微信中
+}
+</code></pre>
+<p>关于自定义UA，这个<code>UIWebView</code>不提供Api，而<code>WKWebView</code>提供Api，前文中也说明过，就是调用<code>customUserAgent</code>属性。</p>
+<pre><code class="objective-c">self.webView.customUserAgent = @&quot;WebViewDemo/1.0.0&quot;;    //自定义UA，只支持WKWebView
+</code></pre>
+<p>而有没有其他的方法实现自定义浏览器UserAgent呢？有。</p>
+<pre><code class="objective-c">//最好在AppDelegate中就提前设置
+@implementation AppDelegate
+
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Override point for customization after application launch.
+
+    //设置自定义UserAgent
+    [self setCustomUserAgent];
+    return YES;
+}
+
+- (void)setCustomUserAgent
+{
+    //get the original user-agent of webview
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    NSString *oldAgent = [webView stringByEvaluatingJavaScriptFromString:@&quot;navigator.userAgent&quot;];
+    //add my info to the new agent
+    NSString *newAgent = [oldAgent stringByAppendingFormat:@&quot; %@&quot;, @&quot;WebViewDemo/1.0.0&quot;];
+    //regist the new agent
+    NSDictionary *dictionnary = [[NSDictionary alloc] initWithObjectsAndKeys:newAgent, @&quot;UserAgent&quot;, newAgent, @&quot;User-Agent&quot;, nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionnary];
+}
+
+@end
+</code></pre>
+<p>上面的代码，展示了在原有<code>UserAgent</code>的基础上，添加一些自定义的内容。</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNbRwly1ffhl5fhh31j31jq0b8tca.jpg" alt="6F9FAD1A-DBD6-4FA6-89CC-28921D57646E"></p>
+<p>可以看到原本的UA后面已经有我们添加的内容了<code>WebViewDemo/1.0.0</code>。</p>
+<p>这里需要说明的是：</p>
+<blockquote>
+<ol>
+<li>通过<code>NSUserDefaults</code>设置自定义UserAgent，可以同时作用于<code>UIWebView</code>和<code>WKWebView</code>。</li>
+<li><code>WKWebView</code>的<code>customUserAgent</code>属性，优先级高于<code>NSUserDefaults</code>，当同时设置时，显示<code>customUserAgent</code>的值。如上图。</li>
+</ol>
+</blockquote>
+<h2 id="Native与H5共享登录状态"><a href="#Native与H5共享登录状态" class="headerlink" title="Native与H5共享登录状态"></a>Native与H5共享登录状态</h2><p>这个需求在前面的文章中针对<code>WKWebView</code>和<code>UIWebView</code>分别单独做过介绍。维持登录状态，依赖的是相同的<code>Cookie</code>。</p>
+<p><code>UIWebView</code>实现起来基本不需要做额外的操作，只要保证<code>sharedHTTPCookieStorage</code>中的<code>Cookie</code>是没问题的。</p>
+<p><code>WKWebView</code>实现起来相对麻烦，有很多坑，这里不再详细描述，小伙伴们可以看下上篇文章中<strong>Cookie管理</strong>一节。</p>
+<h2 id="Native预览H5页面中的image"><a href="#Native预览H5页面中的image" class="headerlink" title="Native预览H5页面中的image"></a>Native预览H5页面中的image</h2><p>这个需求，应该是一个比较常见的需求。在微信中浏览网页时，看到喜欢的图片，你会点击图片查看大图，然后长按图片保存。</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>如果你的项目中有这样的需求的话，可能你需要做如下的分析。</p>
+<blockquote>
+<ol>
+<li>如果想在Native预览H5中的image，最需要的是什么？是图片的链接。如果能有缩略图更好了。</li>
+<li>只要获取了链接，就可以跳转到一个<code>ViewController</code>中，预览图片，后续长按保存自然水到渠成。</li>
+<li>那应该如何获取图片的链接呢？通过JS -&gt; OC 传递图片url。</li>
+</ol>
+</blockquote>
+<p>这里，究竟如何实现获取图片链接，取决于你用的是<code>UIWebView</code>还是<code>WKWebView</code>。</p>
+<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3><blockquote>
+<p>当页面<strong>加载完成后</strong>，给html页面中所有<strong>无默认点击事件</strong>的<code>&lt;img&gt;</code><strong>添加点击事件</strong>，当用户点击时，拿到所有参数。</p>
+<p>（其实这不是最好的方案，最好的解决方案是，跟前端约定一下，哪些图片需要预览，哪些img标签的id统一，或者有个特定的属性，这样客户端可以根据id找到这些img标签）</p>
+</blockquote>
+<p>首先，Html中有个img标签</p>
+<pre><code class="html">&lt;img src=&quot;http://cc.cocimg.com/api/uploads/170425/b2d6e7ea5b3172e6c39120b7bfd662fb.jpg&quot;&gt;
+</code></pre>
+<p>我先写好一个<code>ImgAddClickEvent.js</code>文件，来实现给所有无默认点击事件的<code>&lt;img&gt;</code>添加点击事件。</p>
+<pre><code class="javascript">//获取所有img标签
+var imgs = document.getElementsByTagName(&quot;img&quot;);
+//获取所有的imgUrl
+var imgUrls = new Array();
+var x = 0;
+var y = 0;
+var width = 0;
+var height = 0;
+for (var i = 0; i &lt; imgs.length; i++) {
+    var img = imgs[i];
+    //如果图片链接存在
+    if (img.src || img.getAttribute(&#39;data-src&#39;)) {
+        //添加到图片链接数组中
+        imgUrls.push(img.src || img.getAttribute(&#39;data-src&#39;));
+        //如果图片没有默认的onclick事件，则添加onclick事件，当用户点击时，把图片链接回传给Native
+        if (!img.onclick) {
+            //给图片添加下标的属性
+            img.index = i; //记录下标
+            //添加点击事件，并且回传选中的图片链接、下标、屏幕上的位置、全部的图片数组等
+            img.onclick = function() {
+                x = this.getBoundingClientRect().left;
+                y = this.getBoundingClientRect().top;
+                x = x + document.documentElement.scrollLeft;
+                y = y + document.documentElement.scrollTop;
+                width = this.width;
+                height = this.height;
+                var imgInfo = {
+                    imgUrl: this.src || this.getAttribute(&#39;data-src&#39;),
+                    x: x,
+                    y: y,
+                    width: width,
+                    height: height,
+                    index: this.index,
+                    imgUrls: imgUrls
+                };
+                //UIWebView使用
+                h5ImageDidClick(imgInfo);
+            }
+        }
+    }
+}
+
+function h5ImageDidClick(info) {
+    //WKWebView使用
+    window.webkit.messageHandlers.imageDidClick.postMessage(info);
+}
+</code></pre>
+<p>下面分别介绍<code>UIWebView</code>和<code>WKWebView</code>如何实现。</p>
+<h3 id="UIWebView实现"><a href="#UIWebView实现" class="headerlink" title="UIWebView实现"></a>UIWebView实现</h3><p><code>UIWebView</code>直接使用<code>JavaScriptCore</code>给<code>&lt;img&gt;</code>添加<code>onclick</code>方法为OC的实现即可。</p>
+<pre><code class="objective-c">- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [self convertJSFunctionsToOCMethods];
+}
+
+- (void)convertJSFunctionsToOCMethods {
+    //获取该UIWebview的javascript上下文
+    //self持有jsContext
+    //@property (nonatomic, strong) JSContext *jsContext;
+    self.jsContext = [self.webView valueForKeyPath:@&quot;documentView.webView.mainFrame.javaScriptContext&quot;];
+
+      //先注入给图片添加点击事件的js
+    //防止频繁IO操作，造成性能影响
+    static NSString *jsSource;
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        jsSource = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;ImgAddClickEvent&quot; ofType:@&quot;js&quot;] encoding:NSUTF8StringEncoding error:nil];
+    });
+    [self.jsContext evaluateScript:jsSource];
+    //替换回调方法
+    self.jsContext[@&quot;h5ImageDidClick&quot;] = ^(NSDictionary *imgInfo) {
+        NSLog(@&quot;UIWebView点击了html上的图片，信息是：%@&quot;, imgInfo);
+    };
+}
+</code></pre>
+<h3 id="WKWebView实现"><a href="#WKWebView实现" class="headerlink" title="WKWebView实现"></a>WKWebView实现</h3><p>而<code>WKWebView</code>实现，需要使用<code>WKUserScript</code>和<code>scriptMessageHandler</code>，下面简单介绍下，详细实现，见Demo。</p>
+<p><code>WKWebView</code>的<code>UIViewController</code>中实现如下</p>
+<pre><code class="objective-c">/**
+ 页面中的所有img标签添加点击事件
+ */
+- (void)imgAddClickEvent {
+    //防止频繁IO操作，造成性能影响
+    static NSString *jsSource;
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        jsSource = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;ImgAddClickEvent&quot; ofType:@&quot;js&quot;] encoding:NSUTF8StringEncoding error:nil];
+    });
+    //添加自定义的脚本
+    WKUserScript *js = [[WKUserScript alloc] initWithSource:jsSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+    [self.webView.configuration.userContentController addUserScript:js];
+    //注册回调
+    [self.webView.configuration.userContentController addScriptMessageHandler:self name:@&quot;imageDidClick&quot;];
+}
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@&quot;imageDidClick&quot;]) {
+        //点击了html上的图片
+        NSLog(@&quot;点击了html上的图片，参数为%@&quot;, message.body);
+    }
+}
+</code></pre>
+<p>当我点击这个标签时，因为我添加了onclick事件，在OC端我会接收到回调。因此打印出log</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNbRwly1ffhp6sn0xnj318k0ie7eq.jpg" alt="0B6DFD21-5707-419E-9918-5AA6792D0CAD"></p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><blockquote>
+<p> 上面无论是<code>UIWebView</code>还是<code>WKWebView</code>，参数中的x，y是不包含自定义scrollView的contentInset的，如果要获取图片在手机屏幕上的位置：</p>
+<pre><code class="objective-c"> x = x + self.webView.scrollView.contentInset.left;
+ y = y + self.webView.scrollView.contentInset.top;
+</code></pre>
+</blockquote>
+<p>拿到了这些信息，想必，你可以实现一个十分完美的<strong>图片预览效果</strong>了。</p>
+<h2 id="Native加载并缓存H5页面的中img"><a href="#Native加载并缓存H5页面的中img" class="headerlink" title="Native加载并缓存H5页面的中img"></a>Native加载并缓存H5页面的中img</h2><p>因为页面中的img标签加载图片的网络请求是由<code>WebView</code>管理的，所以要想Native接管图片的下载，只有2条路：</p>
+<blockquote>
+<ol>
+<li>在页面加载前，把页面中img标签的src换成一张native的占位图或者””，并且把img.src传递到native，在native下载图片或者读取缓存完毕后，再把相应的img标签的src设置成本地的，如img.src =”native cache url”。整体交互是JS-&gt;Native, Native -&gt; JS。</li>
+<li><code>NSURLProtocol</code>拦截<code>WebView</code>的所有图片请求，交由我们自己管理。</li>
+</ol>
+</blockquote>
+<p>比较有可行性的是方法2。但也只限于<code>UIWebView</code>。<code>WKWebView</code>上篇文中说过，虽然有私有Api，但是笔者不推荐使用。</p>
+<p>先说下，为何方法1不可行。首先，页面加载前，是在什么时候呢？如果h5不做修改，全部交由Native端处理，是没有办法修改html的，因为<code>UIWebView</code>和<code>WKWebView</code>都没有提供一个Api，告诉你html是这样，但是上面的图片我还没有加载，所以这个方法是走不通的。除非你用<code>loadHTMLString</code>的方法加载，加载前先替换img的src。但是<code>loadHTMLString</code>的方法，又加载不到Web端的js和css，只能用于本地拼接完整<code>HTML String</code>的情况，不适用于一般的场景。So，这条路是走不通的，局限性太大了。</p>
+<p>方法2的核心思路就是拦截请求，最核心的是在你的<code>NSURLProtocol</code>子类中，实现这个方法</p>
+<pre><code class="objective-c">+ (BOOL)canInitWithRequest:(NSURLRequest *)request {
+    //处理过不再处理
+    if ([NSURLProtocol propertyForKey:DAURLProtocolHandledKey inRequest:request]) {
+        return NO;
+    }
+    //根据request header中的 accept 来判断是否加载图片
+    /*
+    {
+     &quot;Accept&quot; = &quot;image/png,image/svg+xml,image/*;q=0.8,*\/*;q=0.5\&quot;;
+     &quot;User-Agent&quot; = &quot;Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Mobile/14E269 WebViewDemo/1.0.0&quot;;
+    }
+     */
+    NSDictionary *headers = request.allHTTPHeaderFields;
+    NSString *accept = headers[@&quot;Accept&quot;];
+    if (accept.length &gt;= @&quot;image&quot;.length &amp;&amp; [accept rangeOfString:@&quot;image&quot;].location != NSNotFound) {
+        return YES;
+    }
+    return NO;
+}
+</code></pre>
+<p>当拦截到图片请求时，再做后续的处理，下面写一些伪代码</p>
+<pre><code class="objective-c">+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
+    return request;
+}
++ (BOOL)requestIsCacheEquivalent:(NSURLRequest *)a toRequest:(NSURLRequest *)b {
+    return [super requestIsCacheEquivalent:a toRequest:b];
+}
+- (void)startLoading {
+    NSMutableURLRequest *mutableReqeust = [[self request] mutableCopy];
+    //这里也可以添加一些自定义的header，看具体需求
+    //标记该request已经处理过
+    [NSURLProtocol setProperty:@(YES) forKey:DAURLProtocolHandledKey inRequest:mutableReqeust];
+
+    //这里NSURLProtocolClient的相关方法都要调用
+    //比如 [self.client URLProtocol:self didLoadData:data];
+    .....
+}
+- (void)stopLoading {
+    .....
+}
+</code></pre>
+<p>这部分代码，Demo中并没有完全实现，如果小伙伴们有兴趣研究下具体的实现，可以参考<a href="http://www.cocoachina.com/ios/20141225/10765.html" target="_blank" rel="external">这篇文章</a>， 笔者这里就不多说了。</p>
+<h2 id="Native分享H5页面到微信、QQ等"><a href="#Native分享H5页面到微信、QQ等" class="headerlink" title="Native分享H5页面到微信、QQ等"></a>Native分享H5页面到微信、QQ等</h2><p>这个需求，其实我在前面的文章中针对<code>UIWebView</code>和<code>WKWebView</code>都已经做了很详细的介绍。这里，简单分享下如何获取分享的内容。</p>
+<p>一般分享到微信或者QQ至少需要的参数是</p>
+<blockquote>
+<ol>
+<li>Title（主标题）</li>
+<li>Description（副标题或者描述）</li>
+<li>ThumbnailImage（缩略图）</li>
+<li>WebpageUrl（h5页面的链接）</li>
+</ol>
+</blockquote>
+<p>这些参数，都怎么获取呢？通过OC-&gt;JS的方式，获取。当然你也可以自定义。</p>
+<pre><code class="javascript">var title = document.title;
+var desc = document.getElementsByTagName(&quot;article&quot;)[0].textContent;     //或者 document.body.innerText; 或者  document.getElementById(&quot;yourId&quot;).innerText; 
+var thumbnailImageUrl = document.getElementsByTagName(&quot;img&quot;)[0].src;    //或者看需求取哪个
+var webpageUrl = location.href;
+</code></pre>
+<p>具体如何用OC调用JS获取这些值，这里就不多说了，看过前面文章的小伙伴，可以自行实现。</p>
+<h2 id="Native为H5提供一套Native-Api（微信、支付宝小程序）"><a href="#Native为H5提供一套Native-Api（微信、支付宝小程序）" class="headerlink" title="Native为H5提供一套Native Api（微信、支付宝小程序）"></a>Native为H5提供一套Native Api（微信、支付宝小程序）</h2><p>很多时候，Native与H5交互的深了，必定会有一些更深层次的需求。比如h5想控制页面的pop、push、present，想调用Native的Share，想调用Native的扫描二维码功能，获取扫描结果……</p>
+<p>那么近半年比较🔥的小程序，微信提供的一些Api（扫码、选择照片等）都是如何实现的呢？很明显，native提供的。</p>
+<p>笔者作为支付宝小程序（尚未发布）的内测用户之一，也接触了支付宝小程序，其中也有很多Api是native提供的。</p>
+<p>其实这就涉及到一个完整的Native与JS交互的流程，<strong>从JS-&gt;Native到Native-&gt;JS</strong>。也就是前面介绍过的，异步回调结果。这个不局限于iOS，Android也是同样的。</p>
+<p>首先，我们为H5提供一套Api，那自然Api是暴露给js的，所以这些Api也是js的。笔者封装了一个接口文件：<code>NativeApi.js</code>（在最新的<a href="https://github.com/DarkAngel7/Demos-WebViewDemo" target="_blank" rel="external">Demo</a>中有）。下面针对一些需求，分析下封装和实现。其中用到了<strong>js闭包</strong>，需要一点js知识。</p>
+<h3 id="分享"><a href="#分享" class="headerlink" title="分享"></a>分享</h3><p>前面的文章中，笔者最常举的一个例子就是分享，Native为H5提供原生的分享方法，h5调用后可以获取分享结果（成功or失败）。这里针对分享这个如何实现，就不赘述了。笔者直接贴上适用于<code>WKWebView</code>的<code>js</code>代码。</p>
+<pre><code class="javascript">/**
+ * Native为H5提供的Api接口
+ *
+ * @type {js对象}
+ */
+var DANativeApi = (function() {
+
+    var NativeApi = {
+        /**
+         * 分享
+         * @param  {js对象} shareInfo 分享信息和回调
+         * @return {void}           无同步返回值，异步返回分享结果 true or false
+         */
+        share: function(shareInfo) {
+            if (shareInfo == undefined || shareInfo == null || typeof(shareInfo) !== &quot;object&quot;) {
+                alert(&quot;参数&quot; + JSON.stringify(shareInfo) + &quot;不合法&quot;);
+            } else {
+                alert(&quot;分享的参数为&quot; + JSON.stringify(shareInfo));
+            }
+            //调用native端
+            _nativeShare(shareInfo);
+        }
+    }
+
+    //下面是一些私有函数
+    /**
+     * Native端实现，适用于WKWebView，UIWebView如何实现，小伙伴自己动脑筋吧~
+     * @param  {js对象} shareInfo 分享的信息和回调
+     * @return {void}           无同步返回值，异步返回
+     */
+    function _nativeShare(shareInfo) {
+        //用于WKWebView，因为WKWebView并没有办法把js function传递过去，因此需要特殊处理一下
+        //把js function转换为字符串，oc端调用时 (&lt;js function string&gt;)(true); 即可
+        //如果有回调函数，且为function
+        var callbackFunction = shareInfo.result;
+        if (callbackFunction != undefined &amp;&amp; callbackFunction != null &amp;&amp; typeof(callbackFunction) === &quot;function&quot;) {
+            shareInfo.result = callbackFunction.toString();
+        }
+        //js -&gt; oc 
+        // 至于Android端，也可以，比如 window.jsInterface.nativeShare(JSON.stringify(shareInfo));
+        window.webkit.messageHandlers.nativeShare.postMessage(shareInfo);
+    }
+
+    //闭包，把Api对象返回
+    return NativeApi;
+})();
+
+/*
+
+//调用时，分享
+DANativeApi.share({
+    title: document.title,
+    desc: &quot;&quot;,
+    url: location.href,
+    imgUrl: &quot;&quot;,
+    result: function(res) {
+        // body...
+        alert(&quot;分享结果为：&quot; + JSON.stringify(res));
+    }
+});
+
+ */
+</code></pre>
+<p>Native端不贴了，小伙伴们看Demo吧。</p>
+<h3 id="从通讯录选择联系人"><a href="#从通讯录选择联系人" class="headerlink" title="从通讯录选择联系人"></a>从通讯录选择联系人</h3><p>这里笔者再举个从通讯录选择联系人的例子，从js到native，再从native到js。</p>
+<p>首先js端，添加如下实现</p>
+<pre><code class="javascript">/**
+ * Native为H5提供的Api接口
+ *
+ * @type {js对象}
+ */
+var DANativeApi = (function() {
+
+    var NativeApi = {
+        /**
+         * 从通讯录选择联系人
+         * @return {void} 无同步返回值，异步返回选择的结果
+         */
+        choosePhoneContact: function(param) {
+            //具体是否需要判断
+            //调用native端
+            _nativeChoosePhoneContact(param);
+        }
+    }
+
+    //下面是一些私有函数
+    /**
+     * Native端实现选择联系人，并异步返回结果
+     * @param  {[type]} param [description]
+     * @return {[type]}       [description]
+     */
+    function _nativeChoosePhoneContact(param) {
+        var callbackFunction = param.completion;
+        if (callbackFunction != undefined &amp;&amp; callbackFunction != null &amp;&amp; typeof(callbackFunction) === &quot;function&quot;) {
+            param.completion = callbackFunction.toString();
+        }
+        //js -&gt; oc 
+        window.webkit.messageHandlers.nativeChoosePhoneContact.postMessage(param);
+    }
+
+    //闭包，把Api对象返回
+    return NativeApi;
+})();
+
+/*
+//选择联系人
+DANativeApi.choosePhoneContact({
+    completion: function(res) {
+        alert(&quot;选择联系人的结果为：&quot; + JSON.stringify(res));
+    }
+});
+ */
+</code></pre>
+<p>OC端依然加载此文件，并注册handler</p>
+<pre><code class="objective-c">/**
+ 添加native端的api
+ */
+- (void)addNativeApiToJS
+{
+    //防止频繁IO操作，造成性能影响
+    static NSString *nativejsSource;
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        nativejsSource = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;NativeApi&quot; ofType:@&quot;js&quot;] encoding:NSUTF8StringEncoding error:nil];
+    });
+    //添加自定义的脚本
+    WKUserScript *js = [[WKUserScript alloc] initWithSource:nativejsSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+    [self.webView.configuration.userContentController addUserScript:js];
+    //注册回调
+    [self.webView.configuration.userContentController addScriptMessageHandler:self name:@&quot;nativeChoosePhoneContact&quot;];
+}
+
+#pragma mark - WKScriptMessageHandler  js -&gt; oc
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+   //选择联系人
+   if ([message.name isEqualToString:@&quot;nativeChoosePhoneContact&quot;]) {
+        NSLog(@&quot;正在选择联系人&quot;);
+
+        [self selectContactCompletion:^(NSString *name, NSString *phone) {
+            NSLog(@&quot;选择完成&quot;);
+            //读取js function的字符串
+            NSString *jsFunctionString = message.body[@&quot;completion&quot;];
+            //拼接调用该方法的js字符串
+            NSString *callbackJs = [NSString stringWithFormat:@&quot;(%@)({name: &#39;%@&#39;, mobile: &#39;%@&#39;});&quot;, jsFunctionString, name, phone];
+            //执行回调
+            [self.webView evaluateJavaScript:callbackJs completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+
+            }];
+        }];
+    }
+}
+</code></pre>
+<p>具体回调方式，在之前的<code>WKWebView</code>中，讲过了，这里不再赘述，选择联系人用的是<code>Contacts</code>框架，具体的小伙伴可以看Demo。</p>
+<p>整体效果如下：</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNbRwly1ffispvqvqeg308z0g0alz.gif" alt="new"></p>
+<h3 id="扫描二维码"><a href="#扫描二维码" class="headerlink" title="扫描二维码"></a>扫描二维码</h3><p>相信看过从通讯录选择联系人的实现，小伙伴们可以自行实现扫描二维码了吧~ 快动手尝试一下吧~</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文给小伙伴们介绍了下Safari调试，以及其具体运用，并且分享了实际应用中一些需求的实现方式。</p>
+<p>结合前面的两篇文章， 相信现在小伙伴们一定对<code>WebView</code>有相当深刻的理解了吧。那么，本系列文章也告一段落了，具体有问题的话，欢迎提问。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Dark Angel</h4>
+    <p>iOS界的低调探索者</p>
+</section>
+    <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2017/05/10/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）/">
+        iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中） →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    
+    	<!-- 多说评论框 start -->
+　	<div class="ds-thread" data-thread-key="2017/05/11/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）/" data-title="iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）" data-url="http://blog.darkangel7.com/2017/05/11/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（下）/" data-auth-key="1"</div>	
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+		var duoshuoQuery = {short_name:"darkangel"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+		 	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">Subscribe!</span></a>
+  
+  <div class="inner">
+     <section class="copyright">原创文章，版权声明：署名-非商业性使用-相同方式共享 2.5</section>
+     <section class="copyright"><a href="/">Dark Angel</a> &copy; 2016 &bull; All Rights Reserved.</section>
+     <section class="poweredby">Powered By Hexo</section>
+  </div>
+</footer>
+
+      <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/8.5/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https'){
+   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-news"  href="/archives"><span>Archive</span></a>
+
+          <a class="icon-wiki"  href="https://github.com/DarkAngel7"><span>Github</span></a>
+
+          <a class="icon-Favorites"  href="/atom.xml"><span>Rss</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>
