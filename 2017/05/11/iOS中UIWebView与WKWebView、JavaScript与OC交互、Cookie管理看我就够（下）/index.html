@@ -299,7 +299,7 @@ function h5ImageDidClick(info) {
 </ol>
 </blockquote>
 <p>比较有可行性的是方法2。但也只限于<code>UIWebView</code>。<code>WKWebView</code>上篇文中说过，虽然有私有Api，但是笔者不推荐使用。</p>
-<p>先说下，为何方法1不可行。首先，页面加载前，是在什么时候呢？如果h5不做修改，全部交由Native端处理，是没有办法修改html的，因为<code>UIWebView</code>和<code>WKWebView</code>都没有提供一个Api，告诉你html是这样，但是上面的图片我还没有加载，所以这个方法是走不通的。除非你用<code>loadHTMLString</code>的方法加载，加载前先替换img的src。但是<code>loadHTMLString</code>的方法，又加载不到Web端的js和css，只能用于本地拼接完整<code>HTML String</code>的情况，不适用于一般的场景。So，这条路是走不通的，局限性太大了。</p>
+<p>先说下，为何方法1不可行。首先，页面加载前，是在什么时候呢？如果h5不做修改，全部交由Native端处理，是没有办法修改html的，因为<code>UIWebView</code>和<code>WKWebView</code>都没有提供一个Api，在图片加载之前告诉你html是什么内容，所以这个方法是走不通的。除非你用<code>loadHTMLString</code>的方法加载，加载前先替换img的src。但是<code>loadHTMLString</code>的方法，又加载不到Web端的js和css，只能用于本地拼接完整<code>HTML String</code>的情况，不适用于一般的场景。So，这条路是走不通的，局限性太大了。</p>
 <p>方法2的核心思路就是拦截请求，最核心的是在你的<code>NSURLProtocol</code>子类中，实现这个方法</p>
 <pre><code class="objective-c">+ (BOOL)canInitWithRequest:(NSURLRequest *)request {
     //处理过不再处理
