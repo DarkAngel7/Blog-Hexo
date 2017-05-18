@@ -87,7 +87,7 @@
 <p>笔者的方案如下：</p>
 <ul>
 <li>页面结构：一个<code>UIViewController</code>上面放一个<code>UITextView</code>，顶部<code>NavigationBar</code>上面放个<strong>预览</strong>按钮和<strong>保存</strong>按钮。点击预览，查看编辑好的预览页；点击保存，保存当前文章到沙盒目录（真的业务需求的话可能是发送）。</li>
-<li><code>UITextView</code>的<code>markdown</code>纯文本转<code>html</code>字符串，<a href="https://cdn.rawgit.com/showdownjs/showdown/1.6.3/dist/showdown.min.js" target="_blank" rel="external">通过成熟的<code>js</code>来实现</a>，至于交互，使用<code>JavaScriptCore</code>（不重复造轮子，就不自己写正则处理了）。</li>
+<li><code>UITextView</code>的<code>markdown</code>纯文本转<code>html</code>字符串，<a href="https://github.com/showdownjs/showdown" target="_blank" rel="external">通过成熟的<code>js</code>来实现</a>，至于交互，使用<code>JavaScriptCore</code>（不重复造轮子，就不自己写正则处理了）。</li>
 <li>预览页直接用<code>WebView</code>加载<code>html</code>字符串即可。</li>
 </ul>
 <h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="搭建UI"><a href="#搭建UI" class="headerlink" title="搭建UI"></a>搭建UI</h2><p>这个So easy，分分钟~如下图</p>
