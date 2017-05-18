@@ -211,7 +211,7 @@ JSValue *htmlValue = [jsFunctionValue callWithArguments:@[self.textView.text]];
 <p>那我们很容易获取到了<code>markdown</code>文本转换成<code>html</code>的字符串了，然后我们给这个字符串完善下，添加上<code>html</code>标签、<code>head</code>标签以及页面的<code>title</code>，然后传递给预览页，直接展示就OK了。</p>
 <p>效果如下图</p>
 <p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1ffpqvmwpzfg30ac0ir49m.gif" alt="点击预览"></p>
-<h3 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h3><p>其实保存，这里只是简单实现，保存到沙盒。实际业务需求，很可能一个发送按钮，上传到服务器，或者是分享到其他的App。这里简单介绍下保存到沙盒。下面上代码</p>
+<h3 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h3><p>其实保存，这里只是简单实现，保存到沙盒。实际业务需求，很可能是一个发送按钮，上传到服务器，或者是分享到其他的App。这里简单介绍下保存到沙盒。下面上代码</p>
 <pre><code class="objective-c">/**
  保存到沙盒目录
 

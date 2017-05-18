@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-18T12:03:11.000Z</updated>
+  <updated>2017-05-18T12:07:44.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2017/05/16/%E5%A6%82%E4%BD%95%E7%94%A8%E6%9C%80%E5%BF%AB%E9%80%9F%E5%BA%A6%E6%92%B8%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84markdown%E7%BC%96%E8%BE%91%E5%99%A8/"/>
     <id>http://blog.darkangel7.com/2017/05/16/如何用最快速度撸个最简单的markdown编辑器/</id>
     <published>2017-05-16T07:29:38.000Z</published>
-    <updated>2017-05-18T12:03:11.000Z</updated>
+    <updated>2017-05-18T12:07:44.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1ffprjqeqhbj313k0iwgrw.jpg" alt="44281095-7821-49F2-9D89-82460D6263DB"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相信不少小伙伴看过笔者前面发的《<strong>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够</strong>》系列了吧，文章中笔者介绍过很多关于Native与JS交互的使用。今天呢，笔者来用最快速度撸个最简单的<code>Markdown</code>编辑器。</p>
@@ -162,7 +162,7 @@ JSValue *htmlValue = [jsFunctionValue callWithArguments:@[self.textView.text]];
 <p>那我们很容易获取到了<code>markdown</code>文本转换成<code>html</code>的字符串了，然后我们给这个字符串完善下，添加上<code>html</code>标签、<code>head</code>标签以及页面的<code>title</code>，然后传递给预览页，直接展示就OK了。</p>
 <p>效果如下图</p>
 <p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1ffpqvmwpzfg30ac0ir49m.gif" alt="点击预览"></p>
-<h3 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h3><p>其实保存，这里只是简单实现，保存到沙盒。实际业务需求，很可能一个发送按钮，上传到服务器，或者是分享到其他的App。这里简单介绍下保存到沙盒。下面上代码</p>
+<h3 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h3><p>其实保存，这里只是简单实现，保存到沙盒。实际业务需求，很可能是一个发送按钮，上传到服务器，或者是分享到其他的App。这里简单介绍下保存到沙盒。下面上代码</p>
 <pre><code class="objective-c">/**
  保存到沙盒目录
 
