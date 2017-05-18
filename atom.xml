@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-18T12:07:44.000Z</updated>
+  <updated>2017-05-18T12:09:00.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2017/05/16/%E5%A6%82%E4%BD%95%E7%94%A8%E6%9C%80%E5%BF%AB%E9%80%9F%E5%BA%A6%E6%92%B8%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84markdown%E7%BC%96%E8%BE%91%E5%99%A8/"/>
     <id>http://blog.darkangel7.com/2017/05/16/如何用最快速度撸个最简单的markdown编辑器/</id>
     <published>2017-05-16T07:29:38.000Z</published>
-    <updated>2017-05-18T12:07:44.000Z</updated>
+    <updated>2017-05-18T12:09:00.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1ffprjqeqhbj313k0iwgrw.jpg" alt="44281095-7821-49F2-9D89-82460D6263DB"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相信不少小伙伴看过笔者前面发的《<strong>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够</strong>》系列了吧，文章中笔者介绍过很多关于Native与JS交互的使用。今天呢，笔者来用最快速度撸个最简单的<code>Markdown</code>编辑器。</p>
@@ -191,7 +191,7 @@ JSValue *htmlValue = [jsFunctionValue callWithArguments:@[self.textView.text]];
 <p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1ffpqsm8tfjj316s0o8jyj.jpg" alt="FC42EBA3-1996-4266-A7BC-9B2363F40E04"></p>
 <p>打开这个文件，可以查看下，源码就是我们输入的内容。</p>
 <p>其实到这里，我们已经完成一个简单的<code>Markdown</code>编辑器。但是小伙伴们可能会说，预览的<code>html</code>太丑了，中间的代码块都没有高亮。那如何解决呢？</p>
-<h2 id="美化样式"><a href="#美化样式" class="headerlink" title="美化样式"></a>美化样式</h2><p>如果你拥有前端的一点点知识，你会立刻想到，少了一个好看的<code>css</code>样式。我们可以通过给<code>html</code>添加<code>css</code>，来使页面看起来更好看。</p>
+<h2 id="美化样式"><a href="#美化样式" class="headerlink" title="美化样式"></a>美化样式</h2><p>如果你拥有一点点前端知识，你会立刻想到，少了一个好看的<code>css</code>样式。我们可以通过给<code>html</code>添加<code>css</code>，来使页面看起来更好看。</p>
 <p>下面我们在<code>- (NSString *)htmlString</code>方法中，给html添加css，这里我本地添加了一个<code>css</code>文件，直接读取并拼接到<code>head</code>标签中</p>
 <pre><code class="objective-c">- (NSString *)htmlString
 {
