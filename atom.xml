@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-18T12:09:00.000Z</updated>
+  <updated>2017-05-18T12:10:15.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2017/05/16/%E5%A6%82%E4%BD%95%E7%94%A8%E6%9C%80%E5%BF%AB%E9%80%9F%E5%BA%A6%E6%92%B8%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84markdown%E7%BC%96%E8%BE%91%E5%99%A8/"/>
     <id>http://blog.darkangel7.com/2017/05/16/如何用最快速度撸个最简单的markdown编辑器/</id>
     <published>2017-05-16T07:29:38.000Z</published>
-    <updated>2017-05-18T12:09:00.000Z</updated>
+    <updated>2017-05-18T12:10:15.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1ffprjqeqhbj313k0iwgrw.jpg" alt="44281095-7821-49F2-9D89-82460D6263DB"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相信不少小伙伴看过笔者前面发的《<strong>iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够</strong>》系列了吧，文章中笔者介绍过很多关于Native与JS交互的使用。今天呢，笔者来用最快速度撸个最简单的<code>Markdown</code>编辑器。</p>
@@ -221,7 +221,8 @@ JSValue *htmlValue = [jsFunctionValue callWithArguments:@[self.textView.text]];
 <p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1ffpr28i2xlg30ac0ir7f7.gif" alt="添加css后，点击预览"></p>
 <p>这下好看多了，如果小伙伴们想要自定义样式，只需要修改css文件就OK啦，当然Github上有很多好看的样式哦~可以找找看，也可以自己修改下css。</p>
 <p>至此，我们的<code>Markdown</code>编辑器就完成了，<code>EditViewController</code>一共181行，<code>PreviewViewController</code>一共38行，加上一个简单的<code>Storyboard</code>，我们的编辑器非常清爽。后续，再可以优化下页面的UI、InputBar中多添加一些快捷按钮，优化下UE，我们就可以上传AppStore啦~</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上面我们用很少的代码，很少的时间完成了一个简单的<code>Markdown</code>编辑器，又一次证明了<code>JavaScriptCore</code>的强大，同时也证明了前端如此火热的今天，Native开发依然是王道。<code>Github</code>前十的开源项目中，有<strong>六</strong>款是基于<code>JavaScript</code>语言的。可能有些小伙伴作为一个Native端开发，会很方，很多小伙伴开始学习前端，学习js。当然，学习新的东西本就无可厚非。但我相信，被动学习的不在少数。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上面我们用很少的代码，很少的时间完成了一个简单的<code>Markdown</code>编辑器，又一次证明了<code>JavaScriptCore</code>的强大，同时也证明了前端如此火热的今天，Native开发依然是王道。</p>
+<p><code>Github</code>前十的开源项目中，有<strong>六</strong>款是基于<code>JavaScript</code>语言的。可能有些小伙伴作为一个Native端开发，会很方，很多小伙伴开始学习前端，学习js。当然，学习新的东西本就无可厚非。但我相信，被动学习的不在少数。</p>
 <p>那么，我们可不可以利用它，结合Native打造更好的App呢？答案是：一定可以。</p>
 ]]></content>
     
