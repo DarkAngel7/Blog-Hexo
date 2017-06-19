@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2017-05-18T12:10:15.000Z</updated>
+  <updated>2017-06-19T03:52:27.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -14,6 +14,52 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>随笔</title>
+    <link href="http://blog.darkangel7.com/2017/06/19/%E9%9A%8F%E7%AC%94/"/>
+    <id>http://blog.darkangel7.com/2017/06/19/随笔/</id>
+    <published>2017-06-19T02:02:44.000Z</published>
+    <updated>2017-06-19T03:52:27.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近感想颇多。</p>
+<p>想写的文字。</p>
+<p>想听的歌曲。</p>
+<p>想学的知识。</p>
+<p>想流浪的心。</p>
+<p>思绪凌乱。</p>
+<p>像迷雾中的自己。</p>
+<p>模糊不清。</p>
+<p>想做一个梦。</p>
+<p>等到醒来时。</p>
+<p>学会了歌唱。</p>
+<p>精通了Swift。</p>
+<p>熟练了English。</p>
+<p>看过了喜欢的电影。</p>
+<p>完成了所有想做的事情。</p>
+<p>时间。</p>
+<p>可不可以再慢一点。</p>
+<p>让我可以变成。</p>
+<p>我想要的自己。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近感想颇多。&lt;/p&gt;
+&lt;p&gt;想写的文字。&lt;/p&gt;
+&lt;p&gt;想听的歌曲。&lt;/p&gt;
+&lt;p&gt;想学的知识。&lt;/p&gt;
+&lt;p&gt;想流浪的心。&lt;/p&gt;
+&lt;p&gt;思绪凌乱。&lt;/p&gt;
+&lt;p&gt;像迷雾中的自己。&lt;/p&gt;
+&lt;p&gt;模糊不清。&lt;/p&gt;
+&lt;p&gt;想做一个梦。&lt;/p&gt;
+&lt;p&gt;等到醒来时。&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>如何用最快速度撸个最简单的markdown编辑器</title>
