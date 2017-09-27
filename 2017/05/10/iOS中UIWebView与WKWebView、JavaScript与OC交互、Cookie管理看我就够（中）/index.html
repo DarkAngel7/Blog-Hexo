@@ -385,13 +385,14 @@ request.allHTTPHeaderFields = requestHeaderFields;
 - (NSString *)cookieString
 {
     NSMutableString *script = [NSMutableString string];
+    [script appendString:@&quot;var cookieNames = document.cookie.split(&#39;; &#39;).map(function(cookie) { return cookie.split(&#39;=&#39;)[0] } );\n&quot;];
     for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
         // Skip cookies that will break our script
         if ([cookie.value rangeOfString:@&quot;&#39;&quot;].location != NSNotFound) {
             continue;
         }
         // Create a line that appends this cookie to the web view&#39;s document&#39;s cookies
-        [script appendFormat:@&quot;document.cookie=&#39;%@&#39;; \n&quot;, cookie.da_javascriptString];
+        [script appendFormat:@&quot;if (cookieNames.indexOf(&#39;%@&#39;) == -1) { document.cookie=&#39;%@&#39;; };\n&quot;, cookie.name, cookie.da_javascriptString];
     }
     return script;
 }

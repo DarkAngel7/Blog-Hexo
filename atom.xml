@@ -769,7 +769,7 @@ DANativeApi.choosePhoneContact({
     <link href="http://blog.darkangel7.com/2017/05/10/iOS%E4%B8%ADUIWebView%E4%B8%8EWKWebView%E3%80%81JavaScript%E4%B8%8EOC%E4%BA%A4%E4%BA%92%E3%80%81Cookie%E7%AE%A1%E7%90%86%E7%9C%8B%E6%88%91%E5%B0%B1%E5%A4%9F%EF%BC%88%E4%B8%AD%EF%BC%89/"/>
     <id>http://blog.darkangel7.com/2017/05/10/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（中）/</id>
     <published>2017-05-10T02:10:09.000Z</published>
-    <updated>2017-05-12T11:22:24.000Z</updated>
+    <updated>2017-09-27T11:30:16.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1fff1sa06wrj30sg0iwwi9.jpg" alt=""></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>关于<code>UIWebView</code>的介绍，相信看过<a href="http://blog.darkangel7.com/2016/09/01/iOS中UIWebView与WKWebView、JavaScript与OC交互、Cookie管理看我就够（上）/">上文</a>的小伙伴们，已经大概清楚了吧，如果有问题，欢迎提问。</p>
@@ -1085,13 +1085,14 @@ request.allHTTPHeaderFields = requestHeaderFields;
 - (NSString *)cookieString
 {
     NSMutableString *script = [NSMutableString string];
+    [script appendString:@&quot;var cookieNames = document.cookie.split(&#39;; &#39;).map(function(cookie) { return cookie.split(&#39;=&#39;)[0] } );\n&quot;];
     for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
         // Skip cookies that will break our script
         if ([cookie.value rangeOfString:@&quot;&#39;&quot;].location != NSNotFound) {
             continue;
         }
         // Create a line that appends this cookie to the web view&#39;s document&#39;s cookies
-        [script appendFormat:@&quot;document.cookie=&#39;%@&#39;; \n&quot;, cookie.da_javascriptString];
+        [script appendFormat:@&quot;if (cookieNames.indexOf(&#39;%@&#39;) == -1) { document.cookie=&#39;%@&#39;; };\n&quot;, cookie.name, cookie.da_javascriptString];
     }
     return script;
 }
