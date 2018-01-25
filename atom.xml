@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.darkangel7.com/"/>
-  <updated>2018-01-25T03:30:36.000Z</updated>
+  <updated>2018-01-25T03:31:46.000Z</updated>
   <id>http://blog.darkangel7.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.darkangel7.com/2018/01/25/%E8%B4%B4%E5%90%A7%E9%97%AE%E9%A2%98%E5%8F%8A%E7%AD%94%E6%A1%88/"/>
     <id>http://blog.darkangel7.com/2018/01/25/贴吧问题及答案/</id>
     <published>2018-01-25T02:25:48.000Z</published>
-    <updated>2018-01-25T03:30:36.000Z</updated>
+    <updated>2018-01-25T03:31:46.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="1月25日-中午1-30分-10W"><a href="#1月25日-中午1-30分-10W" class="headerlink" title="1月25日 中午1:30分 10W"></a>1月25日 中午1:30分 10W</h1><p>1、经典米奇形象中，米奇的鞋子是什么颜色<br>[‘红色’, ‘黄色’, ‘黑色’]<br>正确为：<br>百度搜索结果预测为：红色<br>{“data”:{“now_time”:1516850217,”msg_expire”:1516850221,”msg_interval”:800,”msg_type”:1,”last_msg_id”:836,”question”:{“id”:”1”,”title”:”\u7ecf\u5178\u7c73\u5947\u5f62\u8c61\u4e2d\uff0c\u7c73\u5947\u7684\u978b\u5b50\u662f\u4ec0\u4e48\u989c\u8272\uff1f”,”options”:[{“id”:1,”title”:”\u7ea2\u8272”},{“id”:2,”title”:”\u9ec4\u8272”},{“id”:3,”title”:”\u9ed1\u8272”}],”can_answer”:1},”can_click”:0},”error”:{“errno”:0,”errmsg”:”\u6210\u529f”,”usermsg”:”\u6210\u529f”},”server_time”:9453,”time”:1516850217,”ctime”:0,”logid”:1017376004,”error_code”:”0”}</p>
 <p>正确为：黄色<br>{“data”:{“now_time”:1516850254,”msg_expire”:1516850265,”msg_interval”:800,”msg_type”:2,”last_msg_id”:837,”question”:{“id”:”1”,”title”:”\u7ecf\u5178\u7c73\u5947\u5f62\u8c61\u4e2d\uff0c\u7c73\u5947\u7684\u978b\u5b50\u662f\u4ec0\u4e48\u989c\u8272\uff1f”,”options”:[{“id”:1,”title”:”\u7ea2\u8272”,”answer_num”:4},{“id”:2,”title”:”\u9ec4\u8272”,”answer_num”:3},{“id”:3,”title”:”\u9ed1\u8272”,”answer_num”:1}],”correct_option_id”:2,”beat_count”:0,”use_revival”:0}},”error”:{“errno”:0,”errmsg”:”\u6210\u529f”,”usermsg”:”\u6210\u529f”},”server_time”:9090,”time”:1516850254,”ctime”:0,”logid”:1054832382,”error_code”:”0”}</p>
@@ -35,6 +35,7 @@
 <p>6、高尔夫球中的“第19洞”指的是？（来自：阿斯顿将军1<br>[‘第19个球洞’, ‘加赛球’, ‘会所酒馆’]<br>正确为：<br>百度搜索结果预测为：加赛球<br>{“data”:{“now_time”:1516850901,”msg_expire”:1516850921,”msg_interval”:800,”msg_type”:1,”last_msg_id”:846,”question”:{“id”:”6”,”title”:”\u9ad8\u5c14\u592b\u7403\u4e2d\u7684\u201c\u7b2c19\u6d1e\u201d\u6307\u7684\u662f\uff1f\uff08\u6765\u81ea\uff1a\u963f\u65af\u987f\u5c06\u519b1\uff09”,”options”:[{“id”:1,”title”:”\u7b2c19\u4e2a\u7403\u6d1e”},{“id”:2,”title”:”\u52a0\u8d5b\u7403”},{“id”:3,”title”:”\u4f1a\u6240\u9152\u9986”}],”can_answer”:0},”can_click”:1},”error”:{“errno”:0,”errmsg”:”\u6210\u529f”,”usermsg”:”\u6210\u529f”},”server_time”:10537,”time”:1516850901,”ctime”:0,”logid”:1701028641,”error_code”:”0”}</p>
 <p>正确为：会所酒馆<br>{“data”:{“now_time”:1516850938,”msg_expire”:1516850957,”msg_interval”:800,”msg_type”:2,”last_msg_id”:847,”question”:{“id”:”6”,”title”:”\u9ad8\u5c14\u592b\u7403\u4e2d\u7684\u201c\u7b2c19\u6d1e\u201d\u6307\u7684\u662f\uff1f\uff08\u6765\u81ea\uff1a\u963f\u65af\u987f\u5c06\u519b1\uff09”,”options”:[{“id”:1,”title”:”\u7b2c19\u4e2a\u7403\u6d1e”,”answer_num”:0},{“id”:2,”title”:”\u52a0\u8d5b\u7403”,”answer_num”:1},{“id”:3,”title”:”\u4f1a\u6240\u9152\u9986”,”answer_num”:1}],”correct_option_id”:3,”beat_count”:6,”use_revival”:0}},”error”:{“errno”:0,”errmsg”:”\u6210\u529f”,”usermsg”:”\u6210\u529f”},”server_time”:10802,”time”:1516850938,”ctime”:0,”logid”:1738081509,”error_code”:”0”}</p>
 <p>7、《非人哉》漫画中，哪吒直播时使用的网名是什么<br>[‘降龙使者’, ‘藕丝泥霸’, ‘芭比金刚’]<br>正确为：藕丝泥霸<br>百度搜索结果预测为：藕丝泥霸<br>{“data”:{“now_time”:1516851004,”msg_expire”:1516851030,”msg_interval”:800,”msg_type”:2,”last_msg_id”:849,”question”:{“id”:”7”,”title”:”\u300a\u975e\u4eba\u54c9\u300b\u6f2b\u753b\u4e2d\uff0c\u54ea\u5412\u76f4\u64ad\u65f6\u4f7f\u7528\u7684\u7f51\u540d\u662f\u4ec0\u4e48\uff1f”,”options”:[{“id”:1,”title”:”\u964d\u9f99\u4f7f\u8005”,”answer_num”:0},{“id”:2,”title”:”\u85d5\u4e1d\u6ce5\u9738”,”answer_num”:1},{“id”:3,”title”:”\u82ad\u6bd4\u91d1\u521a”,”answer_num”:0}],”correct_option_id”:2,”beat_count”:7,”use_revival”:0}},”error”:{“errno”:0,”errmsg”:”\u6210\u529f”,”usermsg”:”\u6210\u529f”},”server_time”:8268,”time”:1516851004,”ctime”:0,”logid”:1804472597,”error_code”:”0”}</p>
+<p>8、以下不属于“中国十大传世名画”的是<br>[‘捣练图’, ‘汉宫春晓图’, ‘五牛图’]<br>正确为：<br>百度搜索结果预测为：汉宫春晓图<br>{“data”:{“now_time”:1516851102,”msg_expire”:1516851125,”msg_interval”:800,”msg_type”:1,”last_msg_id”:850,”question”:{“id”:”8”,”title”:”\u4ee5\u4e0b\u4e0d\u5c5e\u4e8e\u201c\u4e2d\u56fd\u5341\u5927\u4f20\u4e16\u540d\u753b\u201d\u7684\u662f\uff1f”,”options”:[{“id”:1,”title”:”\u6363\u7ec3\u56fe”},{“id”:2,”title”:”\u6c49\u5bab\u6625\u6653\u56fe”},{“id”:3,”title”:”\u4e94\u725b\u56fe”}],”can_answer”:0},”can_click”:1},”error”:{“errno”:0,”errmsg”:”\u6210\u529f”,”usermsg”:”\u6210\u529f”},”server_time”:19208,”time”:1516851102,”ctime”:0,”logid”:1902409280,”error_code”:”0”}</p>
 ]]></content>
     
     <summary type="html">
